@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stock Overview</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+    body {
+      background: linear-gradient(to bottom, #0d0d0d, #121212);
+      font-family: 'Poppins', sans-serif;
+      color: #fff;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .top-badge {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: linear-gradient(90deg, #7c4dff, #c86bff);
+      padding: 8px 20px;
+      border-radius: 9999px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #fff;
+      box-shadow: 0 0 20px rgba(155, 90, 255, 0.6);
+      backdrop-filter: blur(6px);
+    }
+
+    .container {
+      text-align: center;
+      animation: fadeIn 0.8s ease forwards;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      letter-spacing: 1px;
+      margin-bottom: 40px;
+      text-shadow: 0 0 15px rgba(160, 90, 255, 0.3);
+    }
+
+    h1::before {
+      content: "⚙️";
+      font-size: 2.2rem;
+    }
+
+    .stock-table {
+      background: #111;
+      border-radius: 18px;
+      width: 550px;
+      border: 1px solid rgba(140, 90, 255, 0.3);
+      box-shadow: 0 0 25px rgba(90, 0, 255, 0.2);
+      overflow: hidden;
+      margin: 0 auto 40px auto;
+    }
+
+    .stock-header, .stock-row {
+      display: grid;
+      grid-template-columns: 1.8fr 1fr 1fr;
+      align-items: center;
+      padding: 18px 28px;
+      text-align: left;
+    }
+
+    .stock-header {
+      background-color: rgba(75, 50, 120, 0.4);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      color: #e2e6ef;
+      border-bottom: 1px solid rgba(120, 80, 255, 0.3);
+      font-size: 1.05rem;
+    }
+
+    .stock-row {
+      background-color: rgba(255, 255, 255, 0.02);
+      transition: background 0.3s ease;
+      animation: fadeUp 0.6s ease forwards;
+      font-size: 1.05rem;
+    }
+
+    .stock-row:hover {
+      background-color: rgba(255, 255, 255, 0.06);
+    }
+
+    .status {
+      color: #00ff84;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .stock-number {
+      background-color: #1d1d1d;
+      padding: 6px 14px;
+      border-radius: 10px;
+      font-weight: 500;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .refresh-btn {
+      background: linear-gradient(90deg, #6b5bff, #a56dff);
+      border: none;
+      color: white;
+      font-weight: 600;
+      font-size: 1.05rem;
+      padding: 14px 45px;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(150, 90, 255, 0.3);
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .refresh-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 25px rgba(180, 120, 255, 0.6);
+    }
+
+    .refresh-icon {
+      display: inline-block;
+      font-size: 1.3rem;
+      animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="top-badge">THUND3R STORE | Boost Stock</div>
+
+  <div class="container">
+    <h1>Stock Overview</h1>
+
+    <div class="stock-table">
+      <div class="stock-header">
+        <div>PRODUCT</div>
+        <div>STATUS</div>
+        <div>STOCK AVAILABLE</div>
+      </div>
+
+      <div class="stock-row">
+        <div>Server Boosts (1 Month)</div>
+        <div><span class="status">IN STOCK</span></div>
+        <div><span class="stock-number">500</span></div>
+      </div>
+
+      <div class="stock-row">
+        <div>Server Boosts (3 Months)</div>
+        <div><span class="status">IN STOCK</span></div>
+        <div><span class="stock-number">150</span></div>
+      </div>
+    </div>
+
+    <button class="refresh-btn">
+      <span class="refresh-icon">🔄</span> REFRESH STOCK
+    </button>
+  </div>
+</body>
+</html>
