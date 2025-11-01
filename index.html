@@ -12,65 +12,90 @@
       font-family: 'Poppins', sans-serif;
       color: #fff;
       margin: 0;
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
+      overflow-x: hidden;
+      padding: 20px;
+      box-sizing: border-box;
     }
 
+    /* 🔹 Badge-ul animat */
     .top-badge {
       position: absolute;
       top: 20px;
       left: 20px;
-      background: linear-gradient(90deg, #7c4dff, #c86bff);
+      background: linear-gradient(90deg, #7c4dff, #c86bff, #6b5bff, #a56dff);
+      background-size: 300% 300%;
+      animation: gradientMove 5s ease infinite;
       padding: 8px 20px;
       border-radius: 9999px;
       font-size: 0.9rem;
       font-weight: 500;
       color: #fff;
-      box-shadow: 0 0 20px rgba(155, 90, 255, 0.6);
+      box-shadow: 0 0 20px rgba(155, 90, 255, 0.4);
       backdrop-filter: blur(6px);
+      white-space: nowrap;
+      text-shadow: 0 0 10px rgba(180, 100, 255, 0.6);
+      pointer-events: none; /* 🚫 să nu poată fi apăsat */
+      transition: all 0.4s ease;
+    }
+
+    /* ✨ Efectul când treci cu mouse-ul peste el */
+    .top-badge:hover {
+      box-shadow: 0 0 35px rgba(180, 120, 255, 0.8);
+      transform: scale(1.05);
+      text-shadow: 0 0 18px rgba(200, 150, 255, 0.8);
+    }
+
+    /* 🔄 Gradient animat în mișcare */
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
     .container {
       text-align: center;
       animation: fadeIn 0.8s ease forwards;
+      width: 100%;
+      max-width: 600px;
     }
 
     h1 {
-      font-size: 2.8rem;
+      font-size: 2.2rem;
       font-weight: 700;
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 12px;
       letter-spacing: 1px;
-      margin-bottom: 40px;
+      margin-bottom: 30px;
       text-shadow: 0 0 15px rgba(160, 90, 255, 0.3);
     }
 
     h1::before {
       content: "⚙️";
-      font-size: 2.2rem;
+      font-size: 2rem;
     }
 
     .stock-table {
       background: #111;
       border-radius: 18px;
-      width: 550px;
+      width: 100%;
       border: 1px solid rgba(140, 90, 255, 0.3);
       box-shadow: 0 0 25px rgba(90, 0, 255, 0.2);
       overflow: hidden;
-      margin: 0 auto 40px auto;
+      margin: 0 auto 30px auto;
     }
 
     .stock-header, .stock-row {
       display: grid;
-      grid-template-columns: 1.8fr 1fr 1fr;
+      grid-template-columns: 1.5fr 1fr 1fr;
       align-items: center;
-      padding: 18px 28px;
+      padding: 15px 20px;
       text-align: left;
     }
 
@@ -80,14 +105,14 @@
       letter-spacing: 0.5px;
       color: #e2e6ef;
       border-bottom: 1px solid rgba(120, 80, 255, 0.3);
-      font-size: 1.05rem;
+      font-size: 1rem;
     }
 
     .stock-row {
       background-color: rgba(255, 255, 255, 0.02);
       transition: background 0.3s ease;
       animation: fadeUp 0.6s ease forwards;
-      font-size: 1.05rem;
+      font-size: 0.95rem;
     }
 
     .stock-row:hover {
@@ -102,19 +127,22 @@
 
     .stock-number {
       background-color: #1d1d1d;
-      padding: 6px 14px;
+      padding: 6px 12px;
       border-radius: 10px;
       font-weight: 500;
       border: 1px solid rgba(255,255,255,0.1);
     }
 
+    /* 🔁 Butonul animat */
     .refresh-btn {
-      background: linear-gradient(90deg, #6b5bff, #a56dff);
+      background: linear-gradient(90deg, #6b5bff, #a56dff, #7c4dff, #c86bff);
+      background-size: 300% 300%;
+      animation: gradientMove 5s ease infinite;
       border: none;
       color: white;
       font-weight: 600;
-      font-size: 1.05rem;
-      padding: 14px 45px;
+      font-size: 1rem;
+      padding: 12px 35px;
       border-radius: 12px;
       cursor: pointer;
       box-shadow: 0 5px 15px rgba(150, 90, 255, 0.3);
@@ -133,7 +161,7 @@
 
     .refresh-icon {
       display: inline-block;
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       animation: spin 2s linear infinite;
     }
 
@@ -150,6 +178,35 @@
     @keyframes fadeIn {
       from { opacity: 0; }
       to { opacity: 1; }
+    }
+
+    /* 📱 Responsive pentru telefoane */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.6rem;
+      }
+
+      .stock-header, .stock-row {
+        grid-template-columns: 1fr;
+        text-align: center;
+        padding: 12px 10px;
+      }
+
+      .stock-header div, .stock-row div {
+        padding: 6px 0;
+      }
+
+      .top-badge {
+        top: 10px;
+        left: 10px;
+        font-size: 0.8rem;
+        padding: 6px 14px;
+      }
+
+      .refresh-btn {
+        width: 100%;
+        justify-content: center;
+      }
     }
   </style>
 </head>
@@ -179,9 +236,15 @@
       </div>
     </div>
 
-    <button class="refresh-btn">
+    <button class="refresh-btn" id="refreshBtn">
       <span class="refresh-icon">🔄</span> REFRESH STOCK
     </button>
   </div>
+
+  <script>
+    document.getElementById("refreshBtn").addEventListener("click", () => {
+      location.reload();
+    });
+  </script>
 </body>
 </html>
