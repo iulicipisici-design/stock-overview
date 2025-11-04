@@ -104,7 +104,6 @@ h1 {
   font-weight: 500;
   border: 1px solid rgba(255,255,255,0.1);
   outline: none;
-  user-select: none;
 }
 
 .refresh-btn, .admin-btn {
@@ -185,8 +184,8 @@ h1 {
 
   <!-- Login Admin -->
   <div id="loginForm">
-    <input type="text" id="username" placeholder="andrei">
-    <input type="password" id="password" placeholder="admin123">
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Parola">
     <button id="loginBtn" class="admin-btn">🔐 Login Admin</button>
   </div>
 
@@ -205,20 +204,25 @@ const stockTable = document.getElementById("stockTable");
 const saveBtn = document.getElementById("saveBtn");
 const refreshBtn = document.getElementById("refreshBtn");
 const adminIndicator = document.getElementById("adminIndicator");
-let stockData = {};
 
-// Login Admin
-loginBtn.addEventListener("click", async () => {
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
+// Poți seta utilizator și parolă aici:
+const ADMIN_USERNAME = "admin";
+const ADMIN_PASSWORD = "parola123";
 
-  const res = await fetch("/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password })
-  });
-  const data = await res.json();
-  if (data.success) {
+// Inițial stocuri (doar la prima încărcare)
+if(!localStorage.getItem("stockData")) {
+  const initialStock = {
+    "1month": { name: "Server Boosts (1 Month)", stock: 500 },
+    "3months": { name: "Server Boosts (3 Months)", stock: 150 },
+    "lifetime": { name: "Server Boosts (Lifetime)", stock: 0 }
+  };
+  localStorage.setItem("stockData", JSON.stringify(initialStock));
+}
+
+// Login admin
+loginBtn.addEventListener("click", () => {
+  const password = document.getElementById("andrei123").value.trim();
+  if(username === ADMIN_USERNAME && password === ADMIN_PASSWORD){
     document.getElementById("loginForm").classList.add("hidden");
     stockContainer.classList.remove("hidden");
     adminIndicator.style.display = "flex";
@@ -229,23 +233,21 @@ loginBtn.addEventListener("click", async () => {
   }
 });
 
-// Load stock
-async function loadStock() {
-  const res = await fetch("/stock");
-  stockData = await res.json();
+// Încarcă stocuri
+function loadStock(){
+  const stockData = JSON.parse(localStorage.getItem("stockData"));
   stockTable.innerHTML = `<div class="stock-header">
     <div>PRODUCT</div><div>STATUS</div><div>STOCK AVAILABLE</div>
   </div>`;
-
-  for (const key in stockData) {
+  for(const key in stockData){
     const row = document.createElement("div");
     row.className = "stock-row";
     row.dataset.key = key;
 
-    let status = "in";
     const num = stockData[key].stock;
-    if(num <= 0) status="out";
-    else if(num <=50) status="low";
+    let status="in";
+    if(num <=0) status="out";
+    else if(num<=50) status="low";
 
     row.innerHTML = `
       <div>${stockData[key].name}</div>
@@ -256,25 +258,20 @@ async function loadStock() {
   }
 }
 
-// Save stock
-saveBtn.addEventListener("click", async () => {
-  const rows = document.querySelectorAll(".stock-row");
-  rows.forEach(row => {
+// Salvează stocuri
+saveBtn.addEventListener("click", () => {
+  const stockData = JSON.parse(localStorage.getItem("stockData"));
+  document.querySelectorAll(".stock-row").forEach(row => {
     const key = row.dataset.key;
     const val = parseInt(row.querySelector(".stock-number").textContent);
     stockData[key].stock = isNaN(val)?0:val;
   });
-
-  await fetch("/stock", {
-    method:"POST",
-    headers: {"Content-Type":"application/json"},
-    body: JSON.stringify(stockData)
-  });
-  showToast("✅ Stoc salvat pe server!");
+  localStorage.setItem("stockData", JSON.stringify(stockData));
   loadStock();
+  showToast("✅ Stoc salvat!");
 });
 
-// Refresh live
+// Refresh
 refreshBtn.addEventListener("click", loadStock);
 
 // Toast
@@ -289,4 +286,3 @@ function showToast(msg){
 
 </body>
 </html>
-
