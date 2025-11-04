@@ -231,21 +231,13 @@
     const adminIndicator = document.getElementById("adminIndicator");
     let adminMode = false;
 
-    // Show admin button doar dacă ești tu
-    if (localStorage.getItem("isAdmin") === "true") {
+    // La fiecare accesare cer parola
+    const pass = prompt("🔐 Introdu parola Admin pentru a accesa modul admin:");
+    if (pass === "admin123") {
       adminBtn.style.display = "inline-block";
       activateAdminMode();
-    } else {
-      // Cere parola ca să arăți butonul
-      const pass = prompt("🔐 Introdu parola Admin pentru a vedea modul admin:");
-      if (pass === "admin123") {
-        localStorage.setItem("isAdmin", "true");
-        adminBtn.style.display = "inline-block";
-        activateAdminMode();
-      }
     }
 
-    // Încarcă stocurile salvate
     window.addEventListener("load", () => {
       rows.forEach(updateFromStorage);
     });
@@ -266,13 +258,11 @@
       });
     });
 
-    // Refresh fără reload
     refreshBtn.addEventListener("click", () => {
       rows.forEach(updateFromStorage);
       showToast("🔄 Stocurile au fost reîmprospătate!");
     });
 
-    // Admin login/logout
     adminBtn.addEventListener("click", () => {
       if (!adminMode) {
         activateAdminMode();
