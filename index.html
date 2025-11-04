@@ -171,18 +171,6 @@ h1 {
 }
 
 .hidden { display:none; }
-
-/* 📱 Responsive */
-@media (max-width: 600px) {
-  h1 { font-size: 1.6rem; }
-  .stock-header, .stock-row { grid-template-columns: 1fr; text-align:center; padding:12px 10px; }
-  .stock-header div, .stock-row div { padding:6px 0; }
-  .refresh-btn, .admin-btn { width:100%; justify-content:center; padding:10px 0; font-size:0.95rem; }
-  #loginForm input { width:100%; margin-bottom:8px; padding:10px; border-radius:8px; border:none; }
-  .container { padding:20px; }
-  .top-badge { top:10px; left:10px; font-size:0.8rem; padding:6px 14px; }
-  .admin-indicator { top:10px; right:10px; font-size:0.8rem; padding:6px 12px; }
-}
 </style>
 </head>
 <body>
@@ -217,81 +205,85 @@ const stockTable = document.getElementById("stockTable");
 const saveBtn = document.getElementById("saveBtn");
 const refreshBtn = document.getElementById("refreshBtn");
 const adminIndicator = document.getElementById("adminIndicator");
+let stockData = {};
 
-// Admin login (demo: username "admin", parola "admin123")
-loginBtn.addEventListener("click", () => {
+// Login Admin
+loginBtn.addEventListener("click", async () => {
   const username = document.getElementById("username").value;
   const password = document.getElementById("password").value;
 
-  if(username === "admin" && password === "admin123") {
+  const res = await fetch("/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password })
+  });
+  const data = await res.json();
+  if (data.success) {
     document.getElementById("loginForm").classList.add("hidden");
     stockContainer.classList.remove("hidden");
     adminIndicator.style.display = "flex";
     loadStock();
     showToast("✅ Admin autentificat!");
-  } else showToast("❌ Username sau parolă greșită");
+  } else {
+    showToast("❌ Username sau parolă greșită");
+  }
 });
 
-let stockData = {
-  "1month": {name:"Server Boosts (1 Month)", stock:500},
-  "3months": {name:"Server Boosts (3 Months)", stock:30},
-  "lifetime": {name:"Server Boosts (Lifetime)", stock:0}
-};
-
 // Load stock
-function loadStock() {
+async function loadStock() {
+  const res = await fetch("/stock");
+  stockData = await res.json();
   stockTable.innerHTML = `<div class="stock-header">
     <div>PRODUCT</div><div>STATUS</div><div>STOCK AVAILABLE</div>
   </div>`;
-  for(const key in stockData){
+
+  for (const key in stockData) {
     const row = document.createElement("div");
-    row.className="stock-row";
-    row.dataset.key=key;
+    row.className = "stock-row";
+    row.dataset.key = key;
+
+    let status = "in";
     const num = stockData[key].stock;
-    let status="in";
-    if(num<=0) status="out";
-    else if(num<=50) status="low";
+    if(num <= 0) status="out";
+    else if(num <=50) status="low";
 
-    row.innerHTML=`<div>${stockData[key].name}</div>
+    row.innerHTML = `
+      <div>${stockData[key].name}</div>
       <div><span class="status" data-status="${status}">${status.toUpperCase().replace("IN","IN STOCK").replace("LOW","LOW STOCK").replace("OUT","OUT OF STOCK")}</span></div>
-      <div><span class="stock-number" contenteditable="true">${num}</span></div>`;
+      <div><span class="stock-number" contenteditable="true">${num}</span></div>
+    `;
     stockTable.appendChild(row);
-
-    // Edit stock live
-    row.querySelector(".stock-number").addEventListener("blur",(e)=>{
-      const val=parseInt(e.target.textContent.trim());
-      if(!isNaN(val)){
-        stockData[key].stock=val;
-        updateStatus(row,val);
-      } else showToast("⚠️ Introdu doar numere!");
-    });
   }
 }
 
-// Update status color
-function updateStatus(row,val){
-  const statusEl=row.querySelector(".status");
-  if(val<=0){statusEl.textContent="OUT OF STOCK"; statusEl.dataset.status="out";}
-  else if(val<=50){statusEl.textContent="LOW STOCK"; statusEl.dataset.status="low";}
-  else{statusEl.textContent="IN STOCK"; statusEl.dataset.status="in";}
-}
+// Save stock
+saveBtn.addEventListener("click", async () => {
+  const rows = document.querySelectorAll(".stock-row");
+  rows.forEach(row => {
+    const key = row.dataset.key;
+    const val = parseInt(row.querySelector(".stock-number").textContent);
+    stockData[key].stock = isNaN(val)?0:val;
+  });
 
-// Refresh button
-refreshBtn.addEventListener("click",()=>{loadStock(); showToast("🔄 Stocurile au fost reîmprospătate!");});
-
-// Save button (simulat)
-saveBtn.addEventListener("click",()=>{
-  // aici poti adauga fetch POST la server
-  showToast("💾 Stoc salvat cu succes!");
+  await fetch("/stock", {
+    method:"POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify(stockData)
+  });
+  showToast("✅ Stoc salvat pe server!");
+  loadStock();
 });
 
-// Toast function
+// Refresh live
+refreshBtn.addEventListener("click", loadStock);
+
+// Toast
 function showToast(msg){
-  const toast=document.createElement("div");
-  toast.className="toast";
-  toast.textContent=msg;
-  document.body.appendChild(toast);
-  setTimeout(()=>toast.remove(),2300);
+  const t = document.createElement("div");
+  t.className="toast";
+  t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),2000);
 }
 </script>
 
