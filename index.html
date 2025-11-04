@@ -1,288 +1,320 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stock Overview</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stock Overview</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
 
-body {
-  background: linear-gradient(to bottom, #0d0d0d, #121212);
-  font-family: 'Poppins', sans-serif;
-  color: #fff;
-  margin: 0;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
+    body {
+      background: linear-gradient(to bottom, #0d0d0d, #121212);
+      font-family: 'Poppins', sans-serif;
+      color: #fff;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      padding: 20px;
+    }
 
-.top-badge {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  background: linear-gradient(90deg, #7c4dff, #c86bff, #6b5bff, #a56dff);
-  background-size: 300% 300%;
-  animation: gradientMove 5s ease infinite;
-  padding: 8px 20px;
-  border-radius: 9999px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #fff;
-  box-shadow: 0 0 20px rgba(155, 90, 255, 0.4);
-  backdrop-filter: blur(6px);
-  white-space: nowrap;
-  text-shadow: 0 0 10px rgba(180, 100, 255, 0.6);
-}
+    .top-badge {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: linear-gradient(90deg, #7c4dff, #c86bff, #6b5bff, #a56dff);
+      background-size: 300% 300%;
+      animation: gradientMove 5s ease infinite;
+      padding: 8px 20px;
+      border-radius: 9999px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #fff;
+      box-shadow: 0 0 20px rgba(155, 90, 255, 0.4);
+      backdrop-filter: blur(6px);
+      white-space: nowrap;
+      text-shadow: 0 0 10px rgba(180, 100, 255, 0.6);
+    }
 
-@keyframes gradientMove {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
 
-.container {
-  width: 100%;
-  max-width: 650px;
-  background: rgba(20, 20, 30, 0.55);
-  backdrop-filter: blur(12px);
-  border-radius: 20px;
-  box-shadow: 0 0 25px rgba(120, 80, 255, 0.2);
-  padding: 30px;
-  text-align: center;
-}
+    .container {
+      text-align: center;
+      animation: fadeIn 0.8s ease forwards;
+      width: 100%;
+      max-width: 650px;
+      background: rgba(20, 20, 30, 0.55);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      box-shadow: 0 0 25px rgba(120, 80, 255, 0.2);
+      padding: 30px;
+    }
 
-h1 {
-  font-size: 2.2rem;
-  font-weight: 700;
-  margin-bottom: 30px;
-}
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      animation: glow 3s ease-in-out infinite alternate;
+    }
 
-.stock-table {
-  background: #111;
-  border-radius: 18px;
-  width: 100%;
-  border: 1px solid rgba(140, 90, 255, 0.3);
-  overflow: hidden;
-  margin-bottom: 20px;
-}
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #7c4dff, 0 0 20px #a56dff; }
+      to { text-shadow: 0 0 25px #c86bff, 0 0 40px #7c4dff; }
+    }
 
-.stock-header, .stock-row {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr;
-  align-items: center;
-  padding: 15px 20px;
-}
+    .stock-table {
+      background: #111;
+      border-radius: 18px;
+      width: 100%;
+      border: 1px solid rgba(140, 90, 255, 0.3);
+      overflow: hidden;
+      margin-bottom: 30px;
+    }
 
-.stock-header {
-  background-color: rgba(75, 50, 120, 0.4);
-  font-weight: 600;
-  color: #e2e6ef;
-  border-bottom: 1px solid rgba(120, 80, 255, 0.3);
-}
+    .stock-header, .stock-row {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr;
+      align-items: center;
+      padding: 15px 20px;
+    }
 
-.stock-row {
-  background-color: rgba(255, 255, 255, 0.02);
-  transition: background 0.3s ease;
-}
+    .stock-header {
+      background-color: rgba(75, 50, 120, 0.4);
+      font-weight: 600;
+      color: #e2e6ef;
+      border-bottom: 1px solid rgba(120, 80, 255, 0.3);
+    }
 
-.stock-row:hover {
-  background-color: rgba(255, 255, 255, 0.06);
-}
+    .stock-row {
+      background-color: rgba(255, 255, 255, 0.02);
+      transition: background 0.3s ease;
+    }
 
-.status[data-status="in"] { color: #00ff84; }
-.status[data-status="low"] { color: #ffcc00; }
-.status[data-status="out"] { color: #ff4d4d; }
+    .stock-row:hover {
+      background-color: rgba(255, 255, 255, 0.06);
+    }
 
-.stock-number {
-  background-color: #1d1d1d;
-  padding: 6px 12px;
-  border-radius: 10px;
-  font-weight: 500;
-  border: 1px solid rgba(255,255,255,0.1);
-  outline: none;
-}
+    .status[data-status="in"] { color: #00ff84; }
+    .status[data-status="low"] { color: #ffcc00; }
+    .status[data-status="out"] { color: #ff4d4d; }
 
-.refresh-btn, .admin-btn {
-  background: linear-gradient(90deg, #6b5bff, #a56dff, #7c4dff, #c86bff);
-  background-size: 300% 300%;
-  animation: gradientMove 5s ease infinite;
-  border: none;
-  color: white;
-  font-weight: 600;
-  font-size: 1rem;
-  padding: 12px 35px;
-  border-radius: 12px;
-  cursor: pointer;
-  box-shadow: 0 5px 15px rgba(150, 90, 255, 0.3);
-  margin: 10px;
-}
+    .stock-number {
+      background-color: #1d1d1d;
+      padding: 6px 12px;
+      border-radius: 10px;
+      font-weight: 500;
+      border: 1px solid rgba(255,255,255,0.1);
+      outline: none;
+      user-select: none;
+    }
 
-.refresh-btn:hover, .admin-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 25px rgba(180, 120, 255, 0.6);
-}
+    .refresh-btn, .admin-btn {
+      background: linear-gradient(90deg, #6b5bff, #a56dff, #7c4dff, #c86bff);
+      background-size: 300% 300%;
+      animation: gradientMove 5s ease infinite;
+      border: none;
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 12px 35px;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(150, 90, 255, 0.3);
+      transition: all 0.3s ease;
+      margin: 10px;
+    }
 
-.toast {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  background: linear-gradient(90deg, #7c4dff, #c86bff);
-  color: #fff;
-  padding: 12px 20px;
-  border-radius: 12px;
-  box-shadow: 0 0 15px rgba(160,90,255,0.5);
-}
+    .refresh-btn:hover, .admin-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 25px rgba(180, 120, 255, 0.6);
+    }
 
-.admin-indicator {
-  position: fixed;
-  top: 20px;
-  right: 25px;
-  display: none;
-  align-items: center;
-  gap: 8px;
-  background: rgba(120, 90, 255, 0.2);
-  border: 1px solid rgba(180, 140, 255, 0.3);
-  padding: 8px 15px;
-  border-radius: 12px;
-  color: #cba6ff;
-  font-size: 0.9rem;
-  backdrop-filter: blur(8px);
-  box-shadow: 0 0 15px rgba(160, 100, 255, 0.4);
-}
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: linear-gradient(90deg, #7c4dff, #c86bff);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(160,90,255,0.5);
+      animation: fadeIn 0.3s, fadeOut 0.3s 2s;
+    }
 
-.pulse-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #c86bff;
-  box-shadow: 0 0 8px #c86bff;
-  animation: pulse 1.2s infinite ease-in-out;
-}
+    @keyframes fadeOut { to { opacity: 0; transform: translateY(10px);} }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-@keyframes pulse {
-  0% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.6); opacity: 0.6; }
-  100% { transform: scale(1); opacity: 1; }
-}
+    /* 🟣 Admin indicator */
+    .admin-indicator {
+      position: fixed;
+      top: 20px;
+      right: 25px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      background: rgba(120, 90, 255, 0.2);
+      border: 1px solid rgba(180, 140, 255, 0.3);
+      padding: 8px 15px;
+      border-radius: 12px;
+      color: #cba6ff;
+      font-size: 0.9rem;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 0 15px rgba(160, 100, 255, 0.4);
+      animation: fadeIn 0.4s ease;
+    }
 
-.hidden { display:none; }
-</style>
+    .pulse-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #c86bff;
+      box-shadow: 0 0 8px #c86bff;
+      animation: pulse 1.2s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.6); opacity: 0.6; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  </style>
 </head>
 <body>
-
-<div class="top-badge">THUND3R STORE | Boost Stock</div>
-<div class="admin-indicator" id="adminIndicator">
-  <div class="pulse-dot"></div><span>Admin Active</span>
-</div>
-
-<div class="container">
-  <h1>Stock Overview</h1>
-
-  <!-- Login Admin -->
-  <div id="loginForm">
-    <input type="text" id="username" placeholder="Username">
-    <input type="password" id="password" placeholder="Parola">
-    <button id="loginBtn" class="admin-btn">🔐 Login Admin</button>
+  <div class="top-badge">THUND3R STORE | Boost Stock</div>
+  <div class="admin-indicator" id="adminIndicator">
+    <div class="pulse-dot"></div>
+    <span>Admin Active</span>
   </div>
 
-  <!-- Stock container -->
-  <div id="stockContainer" class="hidden">
-    <div class="stock-table" id="stockTable"></div>
-    <button id="saveBtn" class="refresh-btn">💾 Salvează Stoc</button>
-    <button id="refreshBtn" class="refresh-btn">🔁 REFRESH STOCK</button>
+  <div class="container">
+    <h1>Stock Overview</h1>
+
+    <div class="stock-table" id="stockTable">
+      <div class="stock-header">
+        <div>PRODUCT</div>
+        <div>STATUS</div>
+        <div>STOCK AVAILABLE</div>
+      </div>
+
+      <div class="stock-row" data-product="1month">
+        <div>Server Boosts (1 Month)</div>
+        <div><span class="status" data-status="in">IN STOCK</span></div>
+        <div><span class="stock-number" contenteditable="false">500</span></div>
+      </div>
+
+      <div class="stock-row" data-product="3months">
+        <div>Server Boosts (3 Months)</div>
+        <div><span class="status" data-status="low">LOW STOCK</span></div>
+        <div><span class="stock-number" contenteditable="false">30</span></div>
+      </div>
+
+      <div class="stock-row" data-product="lifetime">
+        <div>Server Boosts (Lifetime)</div>
+        <div><span class="status" data-status="out">OUT OF STOCK</span></div>
+        <div><span class="stock-number" contenteditable="false">0</span></div>
+      </div>
+    </div>
+
+    <button class="refresh-btn" id="refreshBtn">🔁 REFRESH STOCK</button>
+    <button class="admin-btn" id="adminBtn">🔐 ADMIN LOGIN</button>
   </div>
-</div>
 
-<script>
-const loginBtn = document.getElementById("loginBtn");
-const stockContainer = document.getElementById("stockContainer");
-const stockTable = document.getElementById("stockTable");
-const saveBtn = document.getElementById("saveBtn");
-const refreshBtn = document.getElementById("refreshBtn");
-const adminIndicator = document.getElementById("adminIndicator");
+  <script>
+    const rows = document.querySelectorAll(".stock-row");
+    const refreshBtn = document.getElementById("refreshBtn");
+    const adminBtn = document.getElementById("adminBtn");
+    const adminIndicator = document.getElementById("adminIndicator");
+    let adminMode = false;
 
-// Poți seta utilizator și parolă aici:
-const ADMIN_USERNAME = "admin";
-const ADMIN_PASSWORD = "parola123";
+    // Încarcă stocurile salvate
+    window.addEventListener("load", () => {
+      rows.forEach(updateFromStorage);
+    });
 
-// Inițial stocuri (doar la prima încărcare)
-if(!localStorage.getItem("stockData")) {
-  const initialStock = {
-    "1month": { name: "Server Boosts (1 Month)", stock: 500 },
-    "3months": { name: "Server Boosts (3 Months)", stock: 150 },
-    "lifetime": { name: "Server Boosts (Lifetime)", stock: 0 }
-  };
-  localStorage.setItem("stockData", JSON.stringify(initialStock));
-}
+    // Editare + salvare automată
+    rows.forEach(row => {
+      const stock = row.querySelector(".stock-number");
+      stock.addEventListener("blur", () => {
+        if (!adminMode) return;
+        const value = stock.textContent.trim();
+        if (!isNaN(value)) {
+          localStorage.setItem(row.dataset.product, value);
+          updateStatus(row, value);
+          showToast("✅ Stoc actualizat!");
+        } else {
+          showToast("⚠️ Introdu doar numere!");
+        }
+      });
+    });
 
-// Login admin
-loginBtn.addEventListener("click", () => {
-  const password = document.getElementById("andrei123").value.trim();
-  if(username === ADMIN_USERNAME && password === ADMIN_PASSWORD){
-    document.getElementById("loginForm").classList.add("hidden");
-    stockContainer.classList.remove("hidden");
-    adminIndicator.style.display = "flex";
-    loadStock();
-    showToast("✅ Admin autentificat!");
-  } else {
-    showToast("❌ Username sau parolă greșită");
-  }
-});
+    // Refresh fără reload
+    refreshBtn.addEventListener("click", () => {
+      rows.forEach(updateFromStorage);
+      showToast("🔄 Stocurile au fost reîmprospătate!");
+    });
 
-// Încarcă stocuri
-function loadStock(){
-  const stockData = JSON.parse(localStorage.getItem("stockData"));
-  stockTable.innerHTML = `<div class="stock-header">
-    <div>PRODUCT</div><div>STATUS</div><div>STOCK AVAILABLE</div>
-  </div>`;
-  for(const key in stockData){
-    const row = document.createElement("div");
-    row.className = "stock-row";
-    row.dataset.key = key;
+    // Admin login/logout
+    adminBtn.addEventListener("click", () => {
+      if (!adminMode) {
+        const pass = prompt("🔐 Introdu parola admin:");
+        if (pass === "admin123") {
+          adminMode = true;
+          rows.forEach(r => r.querySelector(".stock-number").setAttribute("contenteditable", "true"));
+          showToast("✅ Modul ADMIN activat!");
+          adminBtn.textContent = "🔓 ADMIN MODE: ON";
+          adminIndicator.style.display = "flex";
+        } else {
+          showToast("❌ Parolă greșită!");
+        }
+      } else {
+        adminMode = false;
+        rows.forEach(r => r.querySelector(".stock-number").setAttribute("contenteditable", "false"));
+        showToast("🔒 Modul ADMIN dezactivat!");
+        adminBtn.textContent = "🔐 ADMIN LOGIN";
+        adminIndicator.style.display = "none";
+      }
+    });
 
-    const num = stockData[key].stock;
-    let status="in";
-    if(num <=0) status="out";
-    else if(num<=50) status="low";
+    // Actualizare localStorage
+    function updateFromStorage(row) {
+      const key = row.dataset.product;
+      const saved = localStorage.getItem(key);
+      if (saved !== null) {
+        row.querySelector(".stock-number").textContent = saved;
+        updateStatus(row, saved);
+      }
+    }
 
-    row.innerHTML = `
-      <div>${stockData[key].name}</div>
-      <div><span class="status" data-status="${status}">${status.toUpperCase().replace("IN","IN STOCK").replace("LOW","LOW STOCK").replace("OUT","OUT OF STOCK")}</span></div>
-      <div><span class="stock-number" contenteditable="true">${num}</span></div>
-    `;
-    stockTable.appendChild(row);
-  }
-}
+    // Status automat
+    function updateStatus(row, value) {
+      const statusEl = row.querySelector(".status");
+      const num = parseInt(value);
+      if (num <= 0) {
+        statusEl.textContent = "OUT OF STOCK";
+        statusEl.dataset.status = "out";
+      } else if (num <= 50) {
+        statusEl.textContent = "LOW STOCK";
+        statusEl.dataset.status = "low";
+      } else {
+        statusEl.textContent = "IN STOCK";
+        statusEl.dataset.status = "in";
+      }
+    }
 
-// Salvează stocuri
-saveBtn.addEventListener("click", () => {
-  const stockData = JSON.parse(localStorage.getItem("stockData"));
-  document.querySelectorAll(".stock-row").forEach(row => {
-    const key = row.dataset.key;
-    const val = parseInt(row.querySelector(".stock-number").textContent);
-    stockData[key].stock = isNaN(val)?0:val;
-  });
-  localStorage.setItem("stockData", JSON.stringify(stockData));
-  loadStock();
-  showToast("✅ Stoc salvat!");
-});
-
-// Refresh
-refreshBtn.addEventListener("click", loadStock);
-
-// Toast
-function showToast(msg){
-  const t = document.createElement("div");
-  t.className="toast";
-  t.textContent=msg;
-  document.body.appendChild(t);
-  setTimeout(()=>t.remove(),2000);
-}
-</script>
-
+    // Toast
+    function showToast(msg) {
+      const toast = document.createElement("div");
+      toast.className = "toast";
+      toast.textContent = msg;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 2300);
+    }
+  </script>
 </body>
 </html>
