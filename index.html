@@ -150,7 +150,6 @@
     @keyframes fadeOut { to { opacity: 0; transform: translateY(10px);} }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    /* 🟣 Admin indicator */
     .admin-indicator {
       position: fixed;
       top: 20px;
@@ -222,7 +221,7 @@
     </div>
 
     <button class="refresh-btn" id="refreshBtn">🔁 REFRESH STOCK</button>
-    <button class="admin-btn" id="adminBtn">🔐 ADMIN LOGIN</button>
+    <button class="admin-btn" id="adminBtn" style="display:none;">🔐 ADMIN LOGIN</button>
   </div>
 
   <script>
@@ -231,6 +230,20 @@
     const adminBtn = document.getElementById("adminBtn");
     const adminIndicator = document.getElementById("adminIndicator");
     let adminMode = false;
+
+    // Show admin button doar dacă ești tu
+    if (localStorage.getItem("isAdmin") === "true") {
+      adminBtn.style.display = "inline-block";
+      activateAdminMode();
+    } else {
+      // Cere parola ca să arăți butonul
+      const pass = prompt("🔐 Introdu parola Admin pentru a vedea modul admin:");
+      if (pass === "admin123") {
+        localStorage.setItem("isAdmin", "true");
+        adminBtn.style.display = "inline-block";
+        activateAdminMode();
+      }
+    }
 
     // Încarcă stocurile salvate
     window.addEventListener("load", () => {
@@ -262,16 +275,7 @@
     // Admin login/logout
     adminBtn.addEventListener("click", () => {
       if (!adminMode) {
-        const pass = prompt("🔐 Introdu parola admin:");
-        if (pass === "admin123") {
-          adminMode = true;
-          rows.forEach(r => r.querySelector(".stock-number").setAttribute("contenteditable", "true"));
-          showToast("✅ Modul ADMIN activat!");
-          adminBtn.textContent = "🔓 ADMIN MODE: ON";
-          adminIndicator.style.display = "flex";
-        } else {
-          showToast("❌ Parolă greșită!");
-        }
+        activateAdminMode();
       } else {
         adminMode = false;
         rows.forEach(r => r.querySelector(".stock-number").setAttribute("contenteditable", "false"));
@@ -281,7 +285,14 @@
       }
     });
 
-    // Actualizare localStorage
+    function activateAdminMode() {
+      adminMode = true;
+      rows.forEach(r => r.querySelector(".stock-number").setAttribute("contenteditable", "true"));
+      showToast("✅ Modul ADMIN activat!");
+      adminBtn.textContent = "🔓 ADMIN MODE: ON";
+      adminIndicator.style.display = "flex";
+    }
+
     function updateFromStorage(row) {
       const key = row.dataset.product;
       const saved = localStorage.getItem(key);
@@ -291,7 +302,6 @@
       }
     }
 
-    // Status automat
     function updateStatus(row, value) {
       const statusEl = row.querySelector(".status");
       const num = parseInt(value);
@@ -307,7 +317,6 @@
       }
     }
 
-    // Toast
     function showToast(msg) {
       const toast = document.createElement("div");
       toast.className = "toast";
