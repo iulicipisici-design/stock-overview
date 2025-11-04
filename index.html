@@ -22,7 +22,6 @@
       box-sizing: border-box;
     }
 
-    /* 🔹 Badge-ul animat */
     .top-badge {
       position: absolute;
       top: 20px;
@@ -40,7 +39,6 @@
       white-space: nowrap;
       text-shadow: 0 0 10px rgba(180, 100, 255, 0.6);
       pointer-events: none;
-      transition: all 0.4s ease;
     }
 
     @keyframes gradientMove {
@@ -64,15 +62,8 @@
     h1 {
       font-size: 2.2rem;
       font-weight: 700;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 12px;
-      letter-spacing: 1px;
-      margin-bottom: 30px;
       animation: glow 3s ease-in-out infinite alternate;
     }
-
     @keyframes glow {
       from { text-shadow: 0 0 10px #7c4dff, 0 0 20px #a56dff; }
       to { text-shadow: 0 0 25px #c86bff, 0 0 40px #7c4dff; }
@@ -83,9 +74,8 @@
       border-radius: 18px;
       width: 100%;
       border: 1px solid rgba(140, 90, 255, 0.3);
-      box-shadow: 0 0 25px rgba(90, 0, 255, 0.2);
       overflow: hidden;
-      margin: 0 auto 30px auto;
+      margin-bottom: 30px;
     }
 
     .stock-header, .stock-row {
@@ -93,7 +83,6 @@
       grid-template-columns: 1.5fr 1fr 1fr;
       align-items: center;
       padding: 15px 20px;
-      text-align: left;
     }
 
     .stock-header {
@@ -106,14 +95,12 @@
     .stock-row {
       background-color: rgba(255, 255, 255, 0.02);
       transition: background 0.3s ease;
-      animation: fadeUp 0.6s ease forwards;
     }
 
     .stock-row:hover {
       background-color: rgba(255, 255, 255, 0.06);
     }
 
-    /* 🔹 Status dinamic */
     .status[data-status="in"] { color: #00ff84; }
     .status[data-status="low"] { color: #ffcc00; }
     .status[data-status="out"] { color: #ff4d4d; }
@@ -124,10 +111,10 @@
       border-radius: 10px;
       font-weight: 500;
       border: 1px solid rgba(255,255,255,0.1);
+      cursor: pointer;
     }
 
-    /* 🔁 Butoane */
-    .refresh-btn, .admin-btn {
+    .refresh-btn {
       background: linear-gradient(90deg, #6b5bff, #a56dff, #7c4dff, #c86bff);
       background-size: 300% 300%;
       animation: gradientMove 5s ease infinite;
@@ -140,33 +127,12 @@
       cursor: pointer;
       box-shadow: 0 5px 15px rgba(150, 90, 255, 0.3);
       transition: all 0.3s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      margin: 5px;
     }
-
-    .refresh-btn:hover, .admin-btn:hover {
+    .refresh-btn:hover {
       transform: translateY(-2px);
       box-shadow: 0 5px 25px rgba(180, 120, 255, 0.6);
     }
 
-    .refresh-icon {
-      display: inline-block;
-      font-size: 1.2rem;
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    /* 🔔 Toast notification */
     .toast {
       position: fixed;
       bottom: 30px;
@@ -180,19 +146,9 @@
     }
     @keyframes fadeOut { to { opacity: 0; transform: translateY(10px);} }
 
-    /* 📱 Responsive */
-    @media (max-width: 600px) {
-      h1 { font-size: 1.6rem; }
-      .stock-header, .stock-row {
-        grid-template-columns: 1fr;
-        text-align: center;
-        padding: 12px 10px;
-      }
-      .refresh-btn, .admin-btn {
-        width: 100%;
-        justify-content: center;
-      }
-      .top-badge { top: 10px; left: 10px; font-size: 0.8rem; padding: 6px 14px; }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
   </style>
 </head>
@@ -202,67 +158,76 @@
   <div class="container">
     <h1>Stock Overview</h1>
 
-    <div class="stock-table">
+    <div class="stock-table" id="stockTable">
       <div class="stock-header">
         <div>PRODUCT</div>
         <div>STATUS</div>
         <div>STOCK AVAILABLE</div>
       </div>
 
-      <div class="stock-row">
+      <div class="stock-row" data-product="1month">
         <div>Server Boosts (1 Month)</div>
         <div><span class="status" data-status="in">IN STOCK</span></div>
         <div><span class="stock-number">500</span></div>
       </div>
 
-      <div class="stock-row">
+      <div class="stock-row" data-product="3months">
         <div>Server Boosts (3 Months)</div>
         <div><span class="status" data-status="low">LOW STOCK</span></div>
         <div><span class="stock-number">60</span></div>
       </div>
 
-      <div class="stock-row">
+      <div class="stock-row" data-product="lifetime">
         <div>Server Boosts (Lifetime)</div>
         <div><span class="status" data-status="out">OUT OF STOCK</span></div>
         <div><span class="stock-number">0</span></div>
       </div>
     </div>
 
-    <button class="refresh-btn" id="refreshBtn">
-      <span class="refresh-icon">🔄</span> REFRESH STOCK
-    </button>
-
-    <button class="admin-btn" id="adminBtn">
-      🔐 ADMIN MODE
-    </button>
+    <button class="refresh-btn" id="refreshBtn">🔁 REFRESH STOCK</button>
   </div>
 
   <script>
+    const rows = document.querySelectorAll(".stock-row");
     const refreshBtn = document.getElementById("refreshBtn");
-    const adminBtn = document.getElementById("adminBtn");
 
-    // 🔁 Refresh fără reload
+    // 📦 Încarcă stocurile salvate din localStorage
+    window.addEventListener("load", () => {
+      rows.forEach(row => {
+        const key = row.dataset.product;
+        const savedValue = localStorage.getItem(key);
+        if (savedValue) {
+          row.querySelector(".stock-number").textContent = savedValue;
+        }
+      });
+    });
+
+    // 💾 Salvare automată la modificare
+    rows.forEach(row => {
+      const stock = row.querySelector(".stock-number");
+
+      stock.addEventListener("click", () => {
+        const current = stock.textContent;
+        const newValue = prompt("Introdu noul stoc pentru acest produs:", current);
+        if (newValue !== null && !isNaN(newValue)) {
+          stock.textContent = newValue;
+          localStorage.setItem(row.dataset.product, newValue);
+          showToast("✅ Stoc actualizat!");
+        }
+      });
+    });
+
+    // 🔁 Refresh fără reload (ia valorile salvate)
     refreshBtn.addEventListener("click", () => {
-      document.querySelectorAll(".stock-row").forEach(row => {
-        const number = row.querySelector(".stock-number");
-        const newValue = Math.floor(Math.random() * 500);
-        number.textContent = newValue;
+      rows.forEach(row => {
+        const key = row.dataset.product;
+        const savedValue = localStorage.getItem(key);
+        row.querySelector(".stock-number").textContent = savedValue || 0;
       });
-      showToast("🔄 Stocurile au fost actualizate!");
+      showToast("🔄 Stocurile au fost reîmprospătate!");
     });
 
-    // 🔐 Admin mode (editare)
-    let adminMode = false;
-    adminBtn.addEventListener("click", () => {
-      adminMode = !adminMode;
-      document.querySelectorAll(".stock-number").forEach(el => {
-        el.contentEditable = adminMode;
-        el.style.outline = adminMode ? "1px dashed #a56dff" : "none";
-      });
-      showToast(adminMode ? "✅ Mod admin activat" : "🔒 Mod admin dezactivat");
-    });
-
-    // 🔔 Toast function
+    // 🔔 Toast
     function showToast(msg) {
       const toast = document.createElement("div");
       toast.className = "toast";
