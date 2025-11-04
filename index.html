@@ -19,7 +19,6 @@
       justify-content: center;
       overflow-x: hidden;
       padding: 20px;
-      box-sizing: border-box;
     }
 
     .top-badge {
@@ -38,7 +37,6 @@
       backdrop-filter: blur(6px);
       white-space: nowrap;
       text-shadow: 0 0 10px rgba(180, 100, 255, 0.6);
-      pointer-events: none;
     }
 
     @keyframes gradientMove {
@@ -51,7 +49,7 @@
       text-align: center;
       animation: fadeIn 0.8s ease forwards;
       width: 100%;
-      max-width: 600px;
+      max-width: 650px;
       background: rgba(20, 20, 30, 0.55);
       backdrop-filter: blur(12px);
       border-radius: 20px;
@@ -64,6 +62,7 @@
       font-weight: 700;
       animation: glow 3s ease-in-out infinite alternate;
     }
+
     @keyframes glow {
       from { text-shadow: 0 0 10px #7c4dff, 0 0 20px #a56dff; }
       to { text-shadow: 0 0 25px #c86bff, 0 0 40px #7c4dff; }
@@ -111,10 +110,11 @@
       border-radius: 10px;
       font-weight: 500;
       border: 1px solid rgba(255,255,255,0.1);
-      cursor: pointer;
+      outline: none;
+      user-select: none;
     }
 
-    .refresh-btn {
+    .refresh-btn, .admin-btn {
       background: linear-gradient(90deg, #6b5bff, #a56dff, #7c4dff, #c86bff);
       background-size: 300% 300%;
       animation: gradientMove 5s ease infinite;
@@ -127,8 +127,10 @@
       cursor: pointer;
       box-shadow: 0 5px 15px rgba(150, 90, 255, 0.3);
       transition: all 0.3s ease;
+      margin: 10px;
     }
-    .refresh-btn:hover {
+
+    .refresh-btn:hover, .admin-btn:hover {
       transform: translateY(-2px);
       box-shadow: 0 5px 25px rgba(180, 120, 255, 0.6);
     }
@@ -144,16 +146,51 @@
       box-shadow: 0 0 15px rgba(160,90,255,0.5);
       animation: fadeIn 0.3s, fadeOut 0.3s 2s;
     }
-    @keyframes fadeOut { to { opacity: 0; transform: translateY(10px);} }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+    @keyframes fadeOut { to { opacity: 0; transform: translateY(10px);} }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* 🟣 Admin indicator */
+    .admin-indicator {
+      position: fixed;
+      top: 20px;
+      right: 25px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      background: rgba(120, 90, 255, 0.2);
+      border: 1px solid rgba(180, 140, 255, 0.3);
+      padding: 8px 15px;
+      border-radius: 12px;
+      color: #cba6ff;
+      font-size: 0.9rem;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 0 15px rgba(160, 100, 255, 0.4);
+      animation: fadeIn 0.4s ease;
+    }
+
+    .pulse-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #c86bff;
+      box-shadow: 0 0 8px #c86bff;
+      animation: pulse 1.2s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.6); opacity: 0.6; }
+      100% { transform: scale(1); opacity: 1; }
     }
   </style>
 </head>
 <body>
   <div class="top-badge">THUND3R STORE | Boost Stock</div>
+  <div class="admin-indicator" id="adminIndicator">
+    <div class="pulse-dot"></div>
+    <span>Admin Active</span>
+  </div>
 
   <div class="container">
     <h1>Stock Overview</h1>
@@ -168,66 +205,109 @@
       <div class="stock-row" data-product="1month">
         <div>Server Boosts (1 Month)</div>
         <div><span class="status" data-status="in">IN STOCK</span></div>
-        <div><span class="stock-number">500</span></div>
+        <div><span class="stock-number" contenteditable="false">500</span></div>
       </div>
 
       <div class="stock-row" data-product="3months">
         <div>Server Boosts (3 Months)</div>
         <div><span class="status" data-status="low">LOW STOCK</span></div>
-        <div><span class="stock-number">60</span></div>
+        <div><span class="stock-number" contenteditable="false">30</span></div>
       </div>
 
       <div class="stock-row" data-product="lifetime">
         <div>Server Boosts (Lifetime)</div>
         <div><span class="status" data-status="out">OUT OF STOCK</span></div>
-        <div><span class="stock-number">0</span></div>
+        <div><span class="stock-number" contenteditable="false">0</span></div>
       </div>
     </div>
 
     <button class="refresh-btn" id="refreshBtn">🔁 REFRESH STOCK</button>
+    <button class="admin-btn" id="adminBtn">🔐 ADMIN LOGIN</button>
   </div>
 
   <script>
     const rows = document.querySelectorAll(".stock-row");
     const refreshBtn = document.getElementById("refreshBtn");
+    const adminBtn = document.getElementById("adminBtn");
+    const adminIndicator = document.getElementById("adminIndicator");
+    let adminMode = false;
 
-    // 📦 Încarcă stocurile salvate din localStorage
+    // Încarcă stocurile salvate
     window.addEventListener("load", () => {
-      rows.forEach(row => {
-        const key = row.dataset.product;
-        const savedValue = localStorage.getItem(key);
-        if (savedValue) {
-          row.querySelector(".stock-number").textContent = savedValue;
-        }
-      });
+      rows.forEach(updateFromStorage);
     });
 
-    // 💾 Salvare automată la modificare
+    // Editare + salvare automată
     rows.forEach(row => {
       const stock = row.querySelector(".stock-number");
-
-      stock.addEventListener("click", () => {
-        const current = stock.textContent;
-        const newValue = prompt("Introdu noul stoc pentru acest produs:", current);
-        if (newValue !== null && !isNaN(newValue)) {
-          stock.textContent = newValue;
-          localStorage.setItem(row.dataset.product, newValue);
+      stock.addEventListener("blur", () => {
+        if (!adminMode) return;
+        const value = stock.textContent.trim();
+        if (!isNaN(value)) {
+          localStorage.setItem(row.dataset.product, value);
+          updateStatus(row, value);
           showToast("✅ Stoc actualizat!");
+        } else {
+          showToast("⚠️ Introdu doar numere!");
         }
       });
     });
 
-    // 🔁 Refresh fără reload (ia valorile salvate)
+    // Refresh fără reload
     refreshBtn.addEventListener("click", () => {
-      rows.forEach(row => {
-        const key = row.dataset.product;
-        const savedValue = localStorage.getItem(key);
-        row.querySelector(".stock-number").textContent = savedValue || 0;
-      });
+      rows.forEach(updateFromStorage);
       showToast("🔄 Stocurile au fost reîmprospătate!");
     });
 
-    // 🔔 Toast
+    // Admin login/logout
+    adminBtn.addEventListener("click", () => {
+      if (!adminMode) {
+        const pass = prompt("🔐 Introdu parola admin:");
+        if (pass === "admin123") {
+          adminMode = true;
+          rows.forEach(r => r.querySelector(".stock-number").setAttribute("contenteditable", "true"));
+          showToast("✅ Modul ADMIN activat!");
+          adminBtn.textContent = "🔓 ADMIN MODE: ON";
+          adminIndicator.style.display = "flex";
+        } else {
+          showToast("❌ Parolă greșită!");
+        }
+      } else {
+        adminMode = false;
+        rows.forEach(r => r.querySelector(".stock-number").setAttribute("contenteditable", "false"));
+        showToast("🔒 Modul ADMIN dezactivat!");
+        adminBtn.textContent = "🔐 ADMIN LOGIN";
+        adminIndicator.style.display = "none";
+      }
+    });
+
+    // Actualizare localStorage
+    function updateFromStorage(row) {
+      const key = row.dataset.product;
+      const saved = localStorage.getItem(key);
+      if (saved !== null) {
+        row.querySelector(".stock-number").textContent = saved;
+        updateStatus(row, saved);
+      }
+    }
+
+    // Status automat
+    function updateStatus(row, value) {
+      const statusEl = row.querySelector(".status");
+      const num = parseInt(value);
+      if (num <= 0) {
+        statusEl.textContent = "OUT OF STOCK";
+        statusEl.dataset.status = "out";
+      } else if (num <= 50) {
+        statusEl.textContent = "LOW STOCK";
+        statusEl.dataset.status = "low";
+      } else {
+        statusEl.textContent = "IN STOCK";
+        statusEl.dataset.status = "in";
+      }
+    }
+
+    // Toast
     function showToast(msg) {
       const toast = document.createElement("div");
       toast.className = "toast";
