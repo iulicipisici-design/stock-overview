@@ -1,384 +1,380 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>THUND3R STORE | Stock Overview</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap');
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>THUND3R STORE — Stock Overview</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1:#07101a;
+    --bg2:#09141d;
+    --card:#0f1720;
+    --card-inner:#13202a;
+    --muted:#9aa3ad;
+    --glass: rgba(255,255,255,0.03);
+  }
 
-    body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: radial-gradient(circle at top left, #0e0f1a, #0b0c15);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      min-height: 100vh;
-    }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+    background: linear-gradient(180deg,#041017 0%, #07121a 60%);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#e9eef6;
+    padding:36px;
+  }
 
-    h1 {
-      font-size: 2.3rem;
-      margin-top: 60px;
-      margin-bottom: 8px;
-      font-weight: 700;
-    }
+  /* layout */
+  .wrap{
+    width:100%;
+    max-width:1180px;
+    display:flex;
+    gap:28px;
+    justify-content:center;
+    align-items:flex-start;
+  }
 
-    .updated {
-      font-size: 0.9rem;
-      color: #8c8c8c;
-      margin-bottom: 30px;
-    }
+  /* card specifics to match image */
+  .card{
+    width:460px;               /* match wide card proportions */
+    border-radius:18px;
+    padding:22px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(0,0,0,0.16));
+    box-shadow:
+      0 6px 22px rgba(2,4,10,0.7),
+      inset 0 1px 0 rgba(255,255,255,0.02);
+    position:relative;
+    overflow:visible;
+    border: 1px solid rgba(255,255,255,0.03);
+  }
 
-    .cards {
-      display: flex;
-      gap: 40px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
+  /* thin rounded top accent like in image */
+  .card::before{
+    content:"";
+    position:absolute;
+    top:-6px;
+    left:14px;
+    right:14px;
+    height:6px;
+    border-radius:8px;
+    background: linear-gradient(90deg, #f1c64a 0%, #7eaaff 50%, #6b8bff 100%);
+    box-shadow: 0 6px 20px rgba(120,120,255,0.06);
+  }
 
-    .card {
-      width: 340px;
-      padding: 30px;
-      border-radius: 18px;
-      background: linear-gradient(145deg, #141623, #0f111d);
-      border: 1px solid rgba(255,255,255,0.05);
-      box-shadow: 0 0 25px rgba(0,0,0,0.4);
-      transition: all 0.3s ease;
-    }
+  /* icon bubble top-left */
+  .card-head{
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
 
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 0 35px rgba(0,0,0,0.55);
-    }
+  .icon{
+    width:62px;
+    height:62px;
+    border-radius:14px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.18));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow: 0 6px 16px rgba(2,6,12,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+    flex-shrink:0;
+  }
 
-    .card img {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      background: rgba(255,255,255,0.03);
-      padding: 8px;
-    }
+  .icon img{width:34px;height:34px}
 
-    .card h2 {
-      margin: 15px 0 15px 0;
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: #f3f3f3;
-    }
+  .title{
+    font-weight:800;
+    font-size:20px;
+    letter-spacing:0.1px;
+    margin:6px 0 0 0;
+    color:#f6f7fb;
+  }
 
-    .stock-box {
-      background: rgba(255,255,255,0.05);
-      border-radius: 10px;
-      padding: 15px 20px;
-      margin-bottom: 18px;
-    }
+  /* inner "stock available" box */
+  .stock-outer{
+    margin-top:18px;
+    background: rgba(255,255,255,0.02);
+    padding:18px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    border:1px solid rgba(255,255,255,0.02);
+    backdrop-filter: blur(6px);
+  }
 
-    .stock-label {
-      color: #a0a0a0;
-      font-weight: 600;
-      font-size: 0.9rem;
-      letter-spacing: 1px;
-    }
+  .stock-label{
+    color:var(--muted);
+    font-weight:700;
+    font-size:12px;
+    letter-spacing:1.6px;
+  }
 
-    .stock {
-      font-size: 2.6rem;
-      font-weight: 700;
-      margin-top: 6px;
-      background: linear-gradient(90deg, #f1cc4a, #7eaaff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
+  .stock-num{
+    font-weight:800;
+    font-size:44px;
+    line-height:1;
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background: linear-gradient(90deg,#f1c64a 0%, #7eaaff 100%);
+    text-shadow: 0 6px 18px rgba(50,60,90,0.25);
+    display:inline-block;
+    min-width:92px;
+    text-align:right;
+  }
 
-    .status {
-      display: inline-block;
-      padding: 8px 22px;
-      border-radius: 30px;
-      font-weight: 700;
-      font-size: 0.9rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
+  /* status pill (bottom-left) */
+  .status{
+    margin-top:18px;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 18px;
+    border-radius:30px;
+    font-weight:800;
+    letter-spacing:0.6px;
+    font-size:13px;
+    box-shadow: 0 8px 22px rgba(2,6,12,0.55);
+    width:fit-content;
+  }
 
-    .in-stock {
-      background: rgba(0,255,136,0.1);
-      color: #00ff84;
-    }
+  .status .dot{
+    width:10px;height:10px;border-radius:50%;
+    box-shadow: 0 0 8px rgba(0,0,0,0.2);
+    display:inline-block;
+  }
 
-    .low-stock {
-      background: rgba(255,200,50,0.1);
-      color: #ffc74c;
-    }
+  .in { background: linear-gradient(180deg, rgba(0,255,140,0.06), rgba(0,0,0,0.06)); color:#00ff84; border:1px solid rgba(0,255,140,0.06); }
+  .in .dot{ background:#00c96a; box-shadow:0 0 12px rgba(0,201,106,0.25); }
 
-    .out-stock {
-      background: rgba(255,60,60,0.1);
-      color: #ff4d4d;
-    }
+  .low { background: linear-gradient(180deg, rgba(255,200,60,0.05), rgba(0,0,0,0.06)); color:#ffbd4e; border:1px solid rgba(255,200,60,0.05); }
+  .low .dot{ background:#ffb43a; box-shadow:0 0 12px rgba(255,180,60,0.18); }
 
-    .navbar {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      right: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+  .out { background: linear-gradient(180deg, rgba(255,60,60,0.05), rgba(0,0,0,0.06)); color:#ff6b6b; border:1px solid rgba(255,60,60,0.04); }
+  .out .dot{ background:#ff4d4d; box-shadow:0 0 12px rgba(255,77,77,0.16); }
 
-    .logo {
-      background: rgba(255,255,255,0.05);
-      padding: 8px 18px;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 14px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.3);
-    }
+  /* small navbar buttons top-right like your original */
+  .topbar{
+    position:fixed;
+    top:18px;
+    right:20px;
+    display:flex;
+    gap:10px;
+    z-index:60;
+  }
 
-    .nav-buttons {
-      display: flex;
-      gap: 10px;
-    }
+  .btn{
+    padding:8px 14px;
+    border-radius:10px;
+    border:0;
+    font-weight:700;
+    cursor:pointer;
+    color:#ffffff;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+  }
+  .btn.admin{ background: linear-gradient(90deg,#6b4bff,#7f64ff); }
+  .btn.buy{ background: linear-gradient(90deg,#10b981,#00d084); }
 
-    .nav-btn {
-      border: none;
-      outline: none;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      padding: 10px 20px;
-      transition: 0.25s;
-    }
+  /* admin indicator tiny */
+  .admin-indicator{
+    position:fixed;
+    top:18px;
+    right:150px;
+    display:none;
+    align-items:center;
+    gap:8px;
+    padding:8px 12px;
+    border-radius:12px;
+    font-weight:700;
+    color:#d9c8ff;
+    background: linear-gradient(180deg, rgba(120,90,255,0.14), rgba(30,18,60,0.06));
+    box-shadow: 0 8px 28px rgba(110,60,255,0.06);
+    z-index:60;
+  }
+  .pulse{
+    width:10px;height:10px;border-radius:50%;
+    background:#c86bff; box-shadow:0 0 14px rgba(200,110,255,0.28); animation:pulse 1.2s infinite;
+  }
+  @keyframes pulse{0%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:0.6}100%{transform:scale(1);opacity:1}}
 
-    .nav-btn.green {
-      background: #00b76b;
-      color: white;
-    }
-
-    .nav-btn.purple {
-      background: #7357ff;
-      color: white;
-    }
-
-    .nav-btn.green:hover,
-    .nav-btn.purple:hover {
-      filter: brightness(1.15);
-      transform: translateY(-2px);
-    }
-
-    .refresh {
-      margin-top: 45px;
-      background: linear-gradient(90deg, #4a9fff, #6e71ff);
-      border: none;
-      color: white;
-      padding: 12px 30px;
-      border-radius: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.25s;
-    }
-
-    .refresh:hover {
-      filter: brightness(1.15);
-      transform: translateY(-2px);
-    }
-
-    .toast {
-      position: fixed;
-      bottom: 25px;
-      right: 25px;
-      background: linear-gradient(90deg, #7357ff, #9d6fff);
-      padding: 12px 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(115, 87, 255, 0.4);
-      animation: fadeIn 0.4s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .admin-indicator {
-      position: fixed;
-      top: 10px;
-      right: 150px;
-      display: none;
-      align-items: center;
-      gap: 8px;
-      background: rgba(120, 90, 255, 0.15);
-      border: 1px solid rgba(180, 140, 255, 0.3);
-      padding: 8px 15px;
-      border-radius: 12px;
-      color: #d1b3ff;
-      font-size: 0.9rem;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 0 12px rgba(160, 100, 255, 0.4);
-      animation: fadeIn 0.4s ease;
-      z-index: 5;
-    }
-
-    .pulse-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #c86bff;
-      box-shadow: 0 0 8px #c86bff;
-      animation: pulse 1.2s infinite ease-in-out;
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.6); opacity: 0.6; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-  </style>
+  /* responsive */
+  @media(max-width:980px){
+    .wrap{flex-direction:column;align-items:center}
+    .card{width:88%}
+  }
+</style>
 </head>
 <body>
 
-  <div class="navbar">
-    <div class="logo" id="logo">THUND3R STORE | Boost Bot</div>
-    <div class="nav-buttons">
-      <button class="nav-btn purple" id="adminBtn">⚡ Admin Panel</button>
-      <button class="nav-btn green" id="buyBtn">🛒 Buy Boost</button>
-    </div>
+  <div class="topbar">
+    <button class="btn admin" id="adminBtn">⚡ Admin Panel</button>
+    <button class="btn buy" id="buyBtn">🛒 Buy Boost</button>
   </div>
 
-  <div class="admin-indicator" id="adminIndicator">
-    <div class="pulse-dot"></div>
-    <span>Admin Active</span>
-  </div>
+  <div class="admin-indicator" id="adminIndicator"><div class="pulse"></div>ADMIN ON</div>
 
-  <h1>Stock Overview</h1>
-  <div class="updated">Last updated: <span id="time"></span></div>
-
-  <div class="cards">
-    <div class="card" data-product="1month">
-      <img src="https://cdn-icons-png.flaticon.com/512/565/565547.png" alt="">
-      <h2>Server Boosts (1 Month)</h2>
-      <div class="stock-box">
-        <div class="stock-label">STOCK AVAILABLE</div>
-        <div class="stock" contenteditable="false">246</div>
+  <main class="wrap" role="main" aria-label="stock-cards">
+    <!-- LEFT CARD (1 Month) -->
+    <article class="card" data-key="card-1">
+      <div class="card-head">
+        <div class="icon"><img src="https://cdn-icons-png.flaticon.com/512/565/565547.png" alt="rocket"></div>
+        <div>
+          <div class="title">Server Boosts (1 Month)</div>
+        </div>
       </div>
-      <div class="status in-stock">● IN STOCK</div>
-    </div>
 
-    <div class="card" data-product="3months">
-      <img src="https://cdn-icons-png.flaticon.com/512/833/833472.png" alt="">
-      <h2>Server Boosts (3 Months)</h2>
-      <div class="stock-box">
-        <div class="stock-label">STOCK AVAILABLE</div>
-        <div class="stock" contenteditable="false">12</div>
+      <div class="stock-outer" aria-hidden="false">
+        <div>
+          <div class="stock-label">STOCK AVAILABLE</div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:flex-end;min-width:160px;">
+          <div class="stock-num" contenteditable="false" id="num-1">246</div>
+        </div>
       </div>
-      <div class="status low-stock">● LOW STOCK</div>
-    </div>
-  </div>
 
-  <button class="refresh" id="refreshBtn">🔄 Refresh Stock</button>
+      <div style="display:flex;justify-content:flex-start;align-items:center;">
+        <div class="status in" id="status-1"><span class="dot"></span> IN STOCK</div>
+      </div>
+    </article>
 
-  <script>
-    const cards = document.querySelectorAll(".card");
-    const adminBtn = document.getElementById("adminBtn");
-    const refreshBtn = document.getElementById("refreshBtn");
-    const buyBtn = document.getElementById("buyBtn");
-    const timeEl = document.getElementById("time");
-    const adminIndicator = document.getElementById("adminIndicator");
+    <!-- RIGHT CARD (3 Months) -->
+    <article class="card" data-key="card-2">
+      <div class="card-head">
+        <div class="icon"><img src="https://cdn-icons-png.flaticon.com/512/833/833472.png" alt="bolt"></div>
+        <div>
+          <div class="title">Server Boosts (3 Months)</div>
+        </div>
+      </div>
 
-    let adminMode = false;
+      <div class="stock-outer">
+        <div>
+          <div class="stock-label">STOCK AVAILABLE</div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:flex-end;min-width:160px;">
+          <div class="stock-num" contenteditable="false" id="num-2">12</div>
+        </div>
+      </div>
 
-    function updateTime() {
-      const now = new Date();
-      timeEl.textContent = now.toLocaleTimeString();
-    }
-    updateTime();
-    setInterval(updateTime, 1000);
+      <div style="display:flex;justify-content:flex-start;align-items:center;">
+        <div class="status low" id="status-2"><span class="dot"></span> LOW STOCK</div>
+      </div>
+    </article>
+  </main>
 
-    window.addEventListener("load", () => {
-      cards.forEach(updateFromStorage);
-    });
+<script>
+  // Elements
+  const adminBtn = document.getElementById('adminBtn');
+  const buyBtn = document.getElementById('buyBtn');
+  const adminIndicator = document.getElementById('adminIndicator');
+  const cards = [
+    { key: 'card-1', numEl: document.getElementById('num-1'), statusEl: document.getElementById('status-1') },
+    { key: 'card-2', numEl: document.getElementById('num-2'), statusEl: document.getElementById('status-2') }
+  ];
 
-    adminBtn.addEventListener("click", () => {
-      if (!adminMode) {
-        const pass = prompt("🔐 Introdu parola admin:");
-        if (pass === "admin123") {
-          adminMode = true;
-          adminBtn.textContent = "🟢 Admin Mode ON";
-          cards.forEach(card => {
-            card.querySelector(".stock").setAttribute("contenteditable", "true");
-          });
-          adminIndicator.style.display = "flex";
-          showToast("✅ Modul ADMIN activat!");
-        } else {
-          showToast("❌ Parolă greșită!");
-        }
+  let adminMode = false;
+
+  // load saved from localStorage
+  function loadAll(){
+    cards.forEach(c=>{
+      const v = localStorage.getItem(c.key);
+      if(v !== null){
+        c.numEl.textContent = v;
+        applyStatus(c, parseInt(v,10));
       } else {
-        adminMode = false;
-        adminBtn.textContent = "⚡ Admin Panel";
-        cards.forEach(card => {
-          card.querySelector(".stock").setAttribute("contenteditable", "false");
+        applyStatus(c, parseInt(c.numEl.textContent || '0',10));
+      }
+    });
+  }
+
+  // apply pill style and text
+  function applyStatus(cardObj, num){
+    const el = cardObj.statusEl;
+    if(isNaN(num)) num = 0;
+    if(num <= 0){
+      el.className = 'status out';
+      el.innerHTML = '<span class="dot"></span> OUT OF STOCK';
+    } else if(num <= 20){
+      el.className = 'status low';
+      el.innerHTML = '<span class="dot"></span> LOW STOCK';
+    } else {
+      el.className = 'status in';
+      el.innerHTML = '<span class="dot"></span> IN STOCK';
+    }
+  }
+
+  loadAll();
+
+  // admin toggle
+  adminBtn.addEventListener('click', ()=>{
+    if(!adminMode){
+      const pass = prompt('🔐 Introdu parola admin:');
+      if(pass === 'admin123'){
+        adminMode = true;
+        adminBtn.textContent = '🟢 Admin Mode ON';
+        adminIndicator.style.display = 'flex';
+        cards.forEach(c=>{
+          c.numEl.setAttribute('contenteditable','true');
+          // visual caret allowed
+          c.numEl.style.outline = 'none';
         });
-        adminIndicator.style.display = "none";
-        showToast("🔒 Modul ADMIN dezactivat!");
-      }
-    });
-
-    cards.forEach(card => {
-      const stock = card.querySelector(".stock");
-      stock.addEventListener("blur", () => {
-        if (!adminMode) return;
-        const value = stock.textContent.trim();
-        if (!isNaN(value)) {
-          localStorage.setItem(card.dataset.product, value);
-          updateStatus(card, value);
-          showToast("💾 Stoc salvat!");
-        } else {
-          showToast("⚠️ Introdu doar numere!");
-        }
-      });
-    });
-
-    refreshBtn.addEventListener("click", () => {
-      cards.forEach(updateFromStorage);
-      showToast("🔄 Stocurile au fost reîncărcate!");
-    });
-
-    buyBtn.addEventListener("click", () => {
-      window.open("https://thund3r-store.mysellauth.com/", "_blank");
-    });
-
-    function updateFromStorage(card) {
-      const key = card.dataset.product;
-      const saved = localStorage.getItem(key);
-      if (saved !== null) {
-        card.querySelector(".stock").textContent = saved;
-        updateStatus(card, saved);
-      }
-    }
-
-    function updateStatus(card, value) {
-      const num = parseInt(value);
-      const status = card.querySelector(".status");
-      if (num <= 0) {
-        status.textContent = "● OUT OF STOCK";
-        status.className = "status out-stock";
-      } else if (num <= 20) {
-        status.textContent = "● LOW STOCK";
-        status.className = "status low-stock";
       } else {
-        status.textContent = "● IN STOCK";
-        status.className = "status in-stock";
+        alert('Parolă greșită!');
       }
+    } else {
+      adminMode = false;
+      adminBtn.textContent = '⚡ Admin Panel';
+      adminIndicator.style.display = 'none';
+      cards.forEach(c=>{
+        c.numEl.setAttribute('contenteditable','false');
+      });
     }
+  });
 
-    function showToast(msg) {
-      const toast = document.createElement("div");
-      toast.className = "toast";
-      toast.textContent = msg;
-      document.body.appendChild(toast);
-      setTimeout(() => toast.remove(), 2500);
+  // save on blur and validate numeric
+  cards.forEach(c=>{
+    c.numEl.addEventListener('blur', (e)=>{
+      if(!adminMode) return;
+      const raw = c.numEl.textContent.trim();
+      // accept numbers only (allow leading + spaces)
+      if(/^[-+]?\d+$/.test(raw)){
+        const n = parseInt(raw,10);
+        localStorage.setItem(c.key, String(n));
+        applyStatus(c, n);
+      } else {
+        // revert to last saved or 0
+        const last = localStorage.getItem(c.key);
+        c.numEl.textContent = last !== null ? last : '0';
+        applyStatus(c, parseInt(c.numEl.textContent || '0',10));
+        alert('⚠️ Introdu doar numere!');
+      }
+    });
+
+    // allow pressing Enter to blur (save)
+    c.numEl.addEventListener('keydown', (ev)=>{
+      if(ev.key === 'Enter'){ ev.preventDefault(); c.numEl.blur(); }
+    });
+  });
+
+  // buy button (keeps behavior from your code)
+  buyBtn.addEventListener('click', ()=> {
+    window.open('https://thund3r-store.mysellauth.com/','_blank');
+  });
+
+  // when page loads, ensure status correct
+  window.addEventListener('load', loadAll);
+
+  // helper: in case numbers changed externally, allow ctrl+R like refresh via keyboard (R)
+  document.addEventListener('keydown',(e)=>{
+    if(e.key.toLowerCase()==='r' && (e.ctrlKey||e.metaKey)){
+      e.preventDefault();
+      loadAll();
     }
-  </script>
-
+  });
+</script>
 </body>
 </html>
