@@ -1,174 +1,233 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>THUND3R STORE — Stock Overview</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg1:#07101a;
-    --bg2:#09141d;
-    --muted:#9aa3ad;
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0;
-    font-family:Inter,system-ui;
-    background:linear-gradient(180deg,#041017 0%,#07121a 60%);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:#e9eef6;
-    padding:36px;
-    min-height:100vh;
-  }
-  .wrap{
-    width:100%;
-    max-width:1180px;
-    display:flex;
-    gap:28px;
-    justify-content:center;
-    align-items:flex-start;
-  }
-  .card{
-    width:460px;
-    border-radius:18px;
-    padding:22px;
-    background:linear-gradient(180deg,rgba(255,255,255,0.015),rgba(0,0,0,0.16));
-    box-shadow:0 6px 22px rgba(2,4,10,0.7),inset 0 1px 0 rgba(255,255,255,0.02);
-    position:relative;
-    border:1px solid rgba(255,255,255,0.03);
-  }
-  .card::before{
-    content:"";
-    position:absolute;
-    top:-6px;left:14px;right:14px;height:6px;border-radius:8px;
-    background:linear-gradient(90deg,#f1c64a 0%,#7eaaff 50%,#6b8bff 100%);
-  }
-  .card-head{display:flex;align-items:center;gap:14px;}
-  .icon{
-    width:62px;height:62px;border-radius:14px;
-    background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(0,0,0,0.18));
-    display:flex;align-items:center;justify-content:center;
-  }
-  .icon img{width:34px;height:34px}
-  .title{font-weight:800;font-size:20px;margin:6px 0 0;}
-  .stock-outer{
-    margin-top:18px;background:rgba(255,255,255,0.02);padding:18px;
-    border-radius:12px;display:flex;align-items:center;justify-content:space-between;
-  }
-  .stock-label{color:var(--muted);font-weight:700;font-size:12px;letter-spacing:1.6px;}
-  .stock-num{
-    font-weight:800;font-size:44px;
-    background:linear-gradient(90deg,#f1c64a 0%,#7eaaff 100%);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-    text-align:right;min-width:92px;
-  }
-  .status{margin-top:18px;display:inline-flex;align-items:center;gap:10px;
-    padding:10px 18px;border-radius:30px;font-weight:800;font-size:13px;}
-  .status .dot{width:10px;height:10px;border-radius:50%;}
-  .in{background:rgba(0,255,140,0.06);color:#00ff84;}
-  .in .dot{background:#00c96a;}
-  .low{background:rgba(255,200,60,0.05);color:#ffbd4e;}
-  .low .dot{background:#ffb43a;}
-  .out{background:rgba(255,60,60,0.05);color:#ff6b6b;}
-  .out .dot{background:#ff4d4d;}
-  .topbar{position:fixed;top:18px;right:20px;display:flex;gap:10px;}
-  .btn{padding:8px 14px;border-radius:10px;border:0;font-weight:700;cursor:pointer;color:#fff;}
-  .btn.admin{background:linear-gradient(90deg,#6b4bff,#7f64ff);}
-  .btn.buy{background:linear-gradient(90deg,#10b981,#00d084);}
-  .admin-indicator{position:fixed;top:18px;right:150px;display:none;align-items:center;gap:8px;
-    padding:8px 12px;border-radius:12px;font-weight:700;color:#d9c8ff;background:rgba(120,90,255,0.14);}
-  .pulse{width:10px;height:10px;border-radius:50%;background:#c86bff;animation:pulse 1.2s infinite;}
-  @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.6)}100%{transform:scale(1)}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>THUND3R STORE</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Poppins", sans-serif;
+      background: #0e0e10;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-top: 40px;
+      background: linear-gradient(90deg, #7eaaff, #f1cc4a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 700;
+    }
+
+    .card-container {
+      display: flex;
+      gap: 30px;
+      margin-top: 40px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .card {
+      width: 250px;
+      background: linear-gradient(145deg, #1a1a1d, #232327);
+      border: 1px solid #2d2d32;
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      position: relative;
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .stock {
+      font-size: 26px;
+      font-weight: 800;
+      background: linear-gradient(90deg, #f1cc4a, #7eaaff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin: 10px 0;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+
+    .in-stock {
+      background-color: #22c55e;
+    }
+    .low-stock {
+      background-color: #facc15;
+      color: #000;
+    }
+    .out-stock {
+      background-color: #ef4444;
+    }
+
+    button {
+      background: linear-gradient(90deg, #7eaaff, #f1cc4a);
+      border: none;
+      color: #000;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-top: 15px;
+    }
+
+    button:hover {
+      opacity: 0.8;
+    }
+
+    .admin-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #444;
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .refresh-btn {
+      margin-top: 40px;
+      background: linear-gradient(90deg, #7eaaff, #f1cc4a);
+      color: #000;
+      font-weight: 700;
+      padding: 12px 25px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .refresh-btn:hover {
+      opacity: 0.8;
+    }
+  </style>
 </head>
 <body>
-<div class="topbar">
-  <button class="btn admin" id="adminBtn">⚡ Admin Panel</button>
-  <button class="btn buy" id="buyBtn">🛒 Buy Boost</button>
-</div>
-<div class="admin-indicator" id="adminIndicator"><div class="pulse"></div>ADMIN ON</div>
 
-<main class="wrap">
-  <article class="card" data-key="card-1">
-    <div class="card-head">
-      <div class="icon"><img src="https://cdn-icons-png.flaticon.com/512/565/565547.png"></div>
-      <div><div class="title">Server Boosts (1 Month)</div></div>
-    </div>
-    <div class="stock-outer">
-      <div><div class="stock-label">STOCK AVAILABLE</div></div>
-      <div><div class="stock-num" contenteditable="false" id="num-1">246</div></div>
-    </div>
-    <div class="status in" id="status-1"><span class="dot"></span> IN STOCK — <span id="text-1">246 Available</span></div>
-  </article>
+  <div class="admin-btn" onclick="toggleAdmin()">Admin</div>
+  <h1>THUND3R STORE</h1>
 
-  <article class="card" data-key="card-2">
-    <div class="card-head">
-      <div class="icon"><img src="https://cdn-icons-png.flaticon.com/512/833/833472.png"></div>
-      <div><div class="title">Server Boosts (3 Months)</div></div>
+  <div class="card-container">
+    <div class="card">
+      <h2>Server Boost (1 Month)</h2>
+      <div id="stock1" class="stock">246 Available</div>
+      <div id="status1" class="status in-stock">IN STOCK</div>
+      <button onclick="buyBoost('stock1')">Buy Boost</button>
     </div>
-    <div class="stock-outer">
-      <div><div class="stock-label">STOCK AVAILABLE</div></div>
-      <div><div class="stock-num" contenteditable="false" id="num-2">12</div></div>
-    </div>
-    <div class="status low" id="status-2"><span class="dot"></span> LOW STOCK — <span id="text-2">12 Available</span></div>
-  </article>
-</main>
 
-<script>
-const adminBtn=document.getElementById('adminBtn');
-const buyBtn=document.getElementById('buyBtn');
-const adminIndicator=document.getElementById('adminIndicator');
-const cards=[
-  {key:'card-1',num:document.getElementById('num-1'),status:document.getElementById('status-1'),text:document.getElementById('text-1')},
-  {key:'card-2',num:document.getElementById('num-2'),status:document.getElementById('status-2'),text:document.getElementById('text-2')}
-];
-let adminMode=false;
-function applyStatus(c,v){
-  if(isNaN(v))v=0;
-  if(v<=0){c.status.className='status out';c.status.innerHTML='<span class="dot"></span> OUT OF STOCK — <span id="text">0 Available</span>';}
-  else if(v<=20){c.status.className='status low';c.status.innerHTML='<span class="dot"></span> LOW STOCK — <span id="text">'+v+' Available</span>';}
-  else{c.status.className='status in';c.status.innerHTML='<span class="dot"></span> IN STOCK — <span id="text">'+v+' Available</span>';}
-}
-function loadAll(){
-  cards.forEach(c=>{
-    let v=localStorage.getItem(c.key);
-    if(v===null)v=c.num.textContent;else c.num.textContent=v;
-    applyStatus(c,parseInt(c.num.textContent,10));
-  });
-}
-loadAll();
-adminBtn.addEventListener('click',()=>{
-  if(!adminMode){
-    const pass=prompt('🔐 Parolă admin:');
-    if(pass==='admin123'){
-      adminMode=true;
-      adminIndicator.style.display='flex';
-      adminBtn.textContent='🟢 Admin Mode ON';
-      cards.forEach(c=>c.num.contentEditable='true');
-    }else alert('Parolă greșită!');
-  }else{
-    adminMode=false;
-    adminIndicator.style.display='none';
-    adminBtn.textContent='⚡ Admin Panel';
-    cards.forEach(c=>c.num.contentEditable='false');
-  }
-});
-cards.forEach(c=>{
-  c.num.addEventListener('blur',()=>{
-    if(!adminMode)return;
-    let v=parseInt(c.num.textContent.trim(),10);
-    if(isNaN(v))v=0;
-    localStorage.setItem(c.key,v);
-    applyStatus(c,v);
-  });
-  c.num.addEventListener('keydown',e=>{
-    if(e.key==='Enter'){e.preventDefault();c.num.blur();}
-  });
-});
-buyBtn.addEventListener('click',()=>window.open('https://thund3r-store.mysellauth.com/','_blank'));
-</script>
+    <div class="card">
+      <h2>Server Boost (3 Months)</h2>
+      <div id="stock2" class="stock">45 Available</div>
+      <div id="status2" class="status low-stock">LOW STOCK</div>
+      <button onclick="buyBoost('stock2')">Buy Boost</button>
+    </div>
+  </div>
+
+  <button class="refresh-btn" onclick="location.reload()">🔄 Refresh Stock</button>
+
+  <script>
+    let adminMode = false;
+
+    function toggleAdmin() {
+      if (!adminMode) {
+        let pass = prompt("Enter admin password:");
+        if (pass === "admin123") {
+          adminMode = true;
+          document.querySelector(".admin-btn").textContent = "Admin ON";
+          document.querySelector(".admin-btn").style.background = "green";
+          enableEditing(true);
+        } else {
+          alert("Wrong password!");
+        }
+      } else {
+        adminMode = false;
+        document.querySelector(".admin-btn").textContent = "Admin";
+        document.querySelector(".admin-btn").style.background = "#444";
+        enableEditing(false);
+        saveStock();
+      }
+    }
+
+    function enableEditing(state) {
+      document.querySelectorAll(".stock").forEach(el => {
+        el.contentEditable = state;
+        el.style.outline = state ? "1px dashed #f1cc4a" : "none";
+      });
+    }
+
+    function saveStock() {
+      localStorage.setItem("stock1", document.getElementById("stock1").textContent);
+      localStorage.setItem("stock2", document.getElementById("stock2").textContent);
+      updateStatus();
+    }
+
+    function loadStock() {
+      if (localStorage.getItem("stock1")) {
+        document.getElementById("stock1").textContent = localStorage.getItem("stock1");
+      }
+      if (localStorage.getItem("stock2")) {
+        document.getElementById("stock2").textContent = localStorage.getItem("stock2");
+      }
+      updateStatus();
+    }
+
+    function updateStatus() {
+      let s1 = parseInt(document.getElementById("stock1").textContent);
+      let s2 = parseInt(document.getElementById("stock2").textContent);
+      setStatus("status1", s1);
+      setStatus("status2", s2);
+    }
+
+    function setStatus(id, val) {
+      let el = document.getElementById(id);
+      if (val > 100) {
+        el.textContent = "IN STOCK";
+        el.className = "status in-stock";
+      } else if (val > 0) {
+        el.textContent = "LOW STOCK";
+        el.className = "status low-stock";
+      } else {
+        el.textContent = "OUT OF STOCK";
+        el.className = "status out-stock";
+      }
+    }
+
+    function buyBoost(id) {
+      let el = document.getElementById(id);
+      let val = parseInt(el.textContent);
+      if (val > 0) {
+        val--;
+        el.textContent = val + " Available";
+        saveStock();
+      } else {
+        alert("Out of stock!");
+      }
+    }
+
+    loadStock();
+  </script>
+
 </body>
 </html>
