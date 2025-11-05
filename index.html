@@ -170,6 +170,39 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    /* Admin indicator */
+    .admin-indicator {
+      position: fixed;
+      top: 20px;
+      right: 25px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      background: rgba(120, 90, 255, 0.2);
+      border: 1px solid rgba(180, 140, 255, 0.3);
+      padding: 8px 15px;
+      border-radius: 12px;
+      color: #cba6ff;
+      font-size: 0.9rem;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 0 15px rgba(160, 100, 255, 0.4);
+      animation: fadeIn 0.4s ease;
+    }
+
+    .pulse-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #c86bff;
+      box-shadow: 0 0 8px #c86bff;
+      animation: pulse 1.2s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.6); opacity: 0.6; }
+      100% { transform: scale(1); opacity: 1; }
+    }
   </style>
 </head>
 <body>
@@ -180,6 +213,11 @@
       <button class="nav-btn purple" id="adminBtn">Admin Panel</button>
       <button class="nav-btn green" id="buyBtn">Buy Boost</button>
     </div>
+  </div>
+
+  <div class="admin-indicator" id="adminIndicator">
+    <div class="pulse-dot"></div>
+    <span>Admin Active</span>
   </div>
 
   <h1>Stock Overview</h1>
@@ -209,6 +247,7 @@
     const refreshBtn = document.getElementById("refreshBtn");
     const buyBtn = document.getElementById("buyBtn");
     const timeEl = document.getElementById("time");
+    const adminIndicator = document.getElementById("adminIndicator");
 
     let adminMode = false;
 
@@ -234,6 +273,7 @@
           cards.forEach(card => {
             card.querySelector(".stock").setAttribute("contenteditable", "true");
           });
+          adminIndicator.style.display = "flex";
           showToast("✅ Modul ADMIN activat!");
         } else {
           showToast("❌ Parolă greșită!");
@@ -244,6 +284,7 @@
         cards.forEach(card => {
           card.querySelector(".stock").setAttribute("contenteditable", "false");
         });
+        adminIndicator.style.display = "none";
         showToast("🔒 Modul ADMIN dezactivat!");
       }
     });
