@@ -1,320 +1,206 @@
 <!DOCTYPE html>
-<html lang="ro">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Stock Overview</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap');
 
     body {
-      background: linear-gradient(to bottom, #0d0d0d, #121212);
-      font-family: 'Poppins', sans-serif;
-      color: #fff;
+      background: radial-gradient(circle at top left, #0e0f1a, #0b0c15);
+      color: white;
+      font-family: 'Inter', sans-serif;
       margin: 0;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      overflow-x: hidden;
-      padding: 20px;
     }
 
-    .top-badge {
+    .navbar {
       position: absolute;
       top: 20px;
       left: 20px;
-      background: linear-gradient(90deg, #7c4dff, #c86bff, #6b5bff, #a56dff);
-      background-size: 300% 300%;
-      animation: gradientMove 5s ease infinite;
-      padding: 8px 20px;
-      border-radius: 9999px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: #fff;
-      box-shadow: 0 0 20px rgba(155, 90, 255, 0.4);
-      backdrop-filter: blur(6px);
-      white-space: nowrap;
-      text-shadow: 0 0 10px rgba(180, 100, 255, 0.6);
+      right: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    @keyframes gradientMove {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+    .logo {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 14px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.3);
     }
 
-    .container {
-      text-align: center;
-      animation: fadeIn 0.8s ease forwards;
-      width: 100%;
-      max-width: 650px;
-      background: rgba(20, 20, 30, 0.55);
-      backdrop-filter: blur(12px);
-      border-radius: 20px;
-      box-shadow: 0 0 25px rgba(120, 80, 255, 0.2);
-      padding: 30px;
+    .nav-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .nav-btn {
+      border: none;
+      outline: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 10px 20px;
+      transition: 0.25s;
+    }
+
+    .nav-btn.green {
+      background: #00b76b;
+      color: white;
+    }
+
+    .nav-btn.purple {
+      background: #7357ff;
+      color: white;
+    }
+
+    .nav-btn.green:hover,
+    .nav-btn.purple:hover {
+      filter: brightness(1.15);
+      transform: translateY(-2px);
     }
 
     h1 {
-      font-size: 2.2rem;
+      font-size: 2.3rem;
+      margin-top: 80px;
+      margin-bottom: 10px;
       font-weight: 700;
-      animation: glow 3s ease-in-out infinite alternate;
     }
 
-    @keyframes glow {
-      from { text-shadow: 0 0 10px #7c4dff, 0 0 20px #a56dff; }
-      to { text-shadow: 0 0 25px #c86bff, 0 0 40px #7c4dff; }
-    }
-
-    .stock-table {
-      background: #111;
-      border-radius: 18px;
-      width: 100%;
-      border: 1px solid rgba(140, 90, 255, 0.3);
-      overflow: hidden;
+    .updated {
+      font-size: 0.9rem;
+      color: #a0a0a0;
       margin-bottom: 30px;
     }
 
-    .stock-header, .stock-row {
-      display: grid;
-      grid-template-columns: 1.5fr 1fr 1fr;
-      align-items: center;
-      padding: 15px 20px;
+    .cards {
+      display: flex;
+      gap: 25px;
+      flex-wrap: wrap;
+      justify-content: center;
     }
 
-    .stock-header {
-      background-color: rgba(75, 50, 120, 0.4);
+    .card {
+      background: linear-gradient(to bottom right, #1a1c2b, #11131f);
+      border-radius: 16px;
+      padding: 25px;
+      width: 280px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+      border-top: 3px solid rgba(120, 100, 255, 0.4);
+    }
+
+    .card h2 {
+      font-size: 1.2rem;
+      margin: 15px 0 10px 0;
       font-weight: 600;
-      color: #e2e6ef;
-      border-bottom: 1px solid rgba(120, 80, 255, 0.3);
     }
 
-    .stock-row {
-      background-color: rgba(255, 255, 255, 0.02);
-      transition: background 0.3s ease;
+    .stock {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, #f0ca4c, #8cb7ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
-    .stock-row:hover {
-      background-color: rgba(255, 255, 255, 0.06);
+    .status {
+      margin-top: 15px;
+      display: inline-block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 9999px;
     }
 
-    .status[data-status="in"] { color: #00ff84; }
-    .status[data-status="low"] { color: #ffcc00; }
-    .status[data-status="out"] { color: #ff4d4d; }
-
-    .stock-number {
-      background-color: #1d1d1d;
-      padding: 6px 12px;
-      border-radius: 10px;
-      font-weight: 500;
-      border: 1px solid rgba(255,255,255,0.1);
-      outline: none;
-      user-select: none;
+    .in-stock {
+      background: rgba(0,255,136,0.1);
+      color: #00ff84;
     }
 
-    .refresh-btn, .admin-btn {
-      background: linear-gradient(90deg, #6b5bff, #a56dff, #7c4dff, #c86bff);
-      background-size: 300% 300%;
-      animation: gradientMove 5s ease infinite;
+    .low-stock {
+      background: rgba(255,200,50,0.1);
+      color: #ffc74c;
+    }
+
+    .refresh {
+      margin-top: 40px;
+      background: linear-gradient(90deg, #4a9fff, #6e71ff);
       border: none;
       color: white;
+      padding: 12px 28px;
+      border-radius: 12px;
       font-weight: 600;
-      font-size: 1rem;
-      padding: 12px 35px;
-      border-radius: 12px;
       cursor: pointer;
-      box-shadow: 0 5px 15px rgba(150, 90, 255, 0.3);
-      transition: all 0.3s ease;
-      margin: 10px;
+      transition: 0.25s;
     }
 
-    .refresh-btn:hover, .admin-btn:hover {
+    .refresh:hover {
+      filter: brightness(1.15);
       transform: translateY(-2px);
-      box-shadow: 0 5px 25px rgba(180, 120, 255, 0.6);
     }
 
-    .toast {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      background: linear-gradient(90deg, #7c4dff, #c86bff);
-      color: #fff;
-      padding: 12px 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(160,90,255,0.5);
-      animation: fadeIn 0.3s, fadeOut 0.3s 2s;
-    }
-
-    @keyframes fadeOut { to { opacity: 0; transform: translateY(10px);} }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-    /* 🟣 Admin indicator */
-    .admin-indicator {
-      position: fixed;
-      top: 20px;
-      right: 25px;
-      display: none;
-      align-items: center;
-      gap: 8px;
-      background: rgba(120, 90, 255, 0.2);
-      border: 1px solid rgba(180, 140, 255, 0.3);
-      padding: 8px 15px;
-      border-radius: 12px;
-      color: #cba6ff;
-      font-size: 0.9rem;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 0 15px rgba(160, 100, 255, 0.4);
-      animation: fadeIn 0.4s ease;
-    }
-
-    .pulse-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #c86bff;
-      box-shadow: 0 0 8px #c86bff;
-      animation: pulse 1.2s infinite ease-in-out;
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.6); opacity: 0.6; }
-      100% { transform: scale(1); opacity: 1; }
-    }
   </style>
 </head>
 <body>
-  <div class="top-badge">THUND3R STORE | Boost Stock</div>
-  <div class="admin-indicator" id="adminIndicator">
-    <div class="pulse-dot"></div>
-    <span>Admin Active</span>
+
+  <div class="navbar">
+    <div class="logo" id="logo">A&L Reseller | Boost Bot</div>
+    <div class="nav-buttons">
+      <button class="nav-btn green" id="stockBtn">Stock 0–3m</button>
+      <button class="nav-btn purple" id="redeemBtn">Redeem</button>
+      <button class="nav-btn green" id="buyBtn">Buy Bot</button>
+    </div>
   </div>
 
-  <div class="container">
-    <h1>Stock Overview</h1>
+  <h1>Stock Overview</h1>
+  <div class="updated">Last updated: 11:21:03 AM</div>
 
-    <div class="stock-table" id="stockTable">
-      <div class="stock-header">
-        <div>PRODUCT</div>
-        <div>STATUS</div>
-        <div>STOCK AVAILABLE</div>
-      </div>
-
-      <div class="stock-row" data-product="1month">
-        <div>Server Boosts (1 Month)</div>
-        <div><span class="status" data-status="in">IN STOCK</span></div>
-        <div><span class="stock-number" contenteditable="false">500</span></div>
-      </div>
-
-      <div class="stock-row" data-product="3months">
-        <div>Server Boosts (3 Months)</div>
-        <div><span class="status" data-status="low">LOW STOCK</span></div>
-        <div><span class="stock-number" contenteditable="false">30</span></div>
-      </div>
-
-      <div class="stock-row" data-product="lifetime">
-        <div>Server Boosts (Lifetime)</div>
-        <div><span class="status" data-status="out">OUT OF STOCK</span></div>
-        <div><span class="stock-number" contenteditable="false">0</span></div>
-      </div>
+  <div class="cards">
+    <div class="card">
+      <img src="https://cdn-icons-png.flaticon.com/512/565/565547.png" width="40" alt="">
+      <h2>Server Boosts (1 Month)</h2>
+      <div class="stock">246</div>
+      <div class="status in-stock">🟢 IN STOCK</div>
     </div>
 
-    <button class="refresh-btn" id="refreshBtn">🔁 REFRESH STOCK</button>
-    <button class="admin-btn" id="adminBtn">🔐 ADMIN LOGIN</button>
+    <div class="card">
+      <img src="https://cdn-icons-png.flaticon.com/512/833/833472.png" width="40" alt="">
+      <h2>Server Boosts (3 Months)</h2>
+      <div class="stock">12</div>
+      <div class="status low-stock">🟠 LOW STOCK</div>
+    </div>
   </div>
 
+  <button class="refresh">🔄 Refresh Stock</button>
+
   <script>
-    const rows = document.querySelectorAll(".stock-row");
-    const refreshBtn = document.getElementById("refreshBtn");
-    const adminBtn = document.getElementById("adminBtn");
-    const adminIndicator = document.getElementById("adminIndicator");
-    let adminMode = false;
+    // Modificări cerute
+    window.addEventListener("DOMContentLoaded", () => {
+      // Schimbă titlul
+      document.getElementById("logo").textContent = "THUND3R STORE";
 
-    // Încarcă stocurile salvate
-    window.addEventListener("load", () => {
-      rows.forEach(updateFromStorage);
+      // Elimină butonul Stock 0–3m
+      const stockBtn = document.getElementById("stockBtn");
+      if (stockBtn) stockBtn.remove();
+
+      // Redeem -> Admin Panel
+      const redeemBtn = document.getElementById("redeemBtn");
+      if (redeemBtn) redeemBtn.textContent = "Admin Panel";
+
+      // Buy Bot -> Buy Boost
+      const buyBtn = document.getElementById("buyBtn");
+      if (buyBtn) buyBtn.textContent = "Buy Boost";
     });
-
-    // Editare + salvare automată
-    rows.forEach(row => {
-      const stock = row.querySelector(".stock-number");
-      stock.addEventListener("blur", () => {
-        if (!adminMode) return;
-        const value = stock.textContent.trim();
-        if (!isNaN(value)) {
-          localStorage.setItem(row.dataset.product, value);
-          updateStatus(row, value);
-          showToast("✅ Stoc actualizat!");
-        } else {
-          showToast("⚠️ Introdu doar numere!");
-        }
-      });
-    });
-
-    // Refresh fără reload
-    refreshBtn.addEventListener("click", () => {
-      rows.forEach(updateFromStorage);
-      showToast("🔄 Stocurile au fost reîmprospătate!");
-    });
-
-    // Admin login/logout
-    adminBtn.addEventListener("click", () => {
-      if (!adminMode) {
-        const pass = prompt("🔐 Introdu parola admin:");
-        if (pass === "admin123") {
-          adminMode = true;
-          rows.forEach(r => r.querySelector(".stock-number").setAttribute("contenteditable", "true"));
-          showToast("✅ Modul ADMIN activat!");
-          adminBtn.textContent = "🔓 ADMIN MODE: ON";
-          adminIndicator.style.display = "flex";
-        } else {
-          showToast("❌ Parolă greșită!");
-        }
-      } else {
-        adminMode = false;
-        rows.forEach(r => r.querySelector(".stock-number").setAttribute("contenteditable", "false"));
-        showToast("🔒 Modul ADMIN dezactivat!");
-        adminBtn.textContent = "🔐 ADMIN LOGIN";
-        adminIndicator.style.display = "none";
-      }
-    });
-
-    // Actualizare localStorage
-    function updateFromStorage(row) {
-      const key = row.dataset.product;
-      const saved = localStorage.getItem(key);
-      if (saved !== null) {
-        row.querySelector(".stock-number").textContent = saved;
-        updateStatus(row, saved);
-      }
-    }
-
-    // Status automat
-    function updateStatus(row, value) {
-      const statusEl = row.querySelector(".status");
-      const num = parseInt(value);
-      if (num <= 0) {
-        statusEl.textContent = "OUT OF STOCK";
-        statusEl.dataset.status = "out";
-      } else if (num <= 50) {
-        statusEl.textContent = "LOW STOCK";
-        statusEl.dataset.status = "low";
-      } else {
-        statusEl.textContent = "IN STOCK";
-        statusEl.dataset.status = "in";
-      }
-    }
-
-    // Toast
-    function showToast(msg) {
-      const toast = document.createElement("div");
-      toast.className = "toast";
-      toast.textContent = msg;
-      document.body.appendChild(toast);
-      setTimeout(() => toast.remove(), 2300);
-    }
   </script>
+
 </body>
 </html>
