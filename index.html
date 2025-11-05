@@ -27,6 +27,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      z-index: 10;
     }
 
     .logo {
@@ -170,23 +171,24 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Admin indicator */
+    /* Admin indicator — moved higher to avoid overlap */
     .admin-indicator {
       position: fixed;
-      top: 20px;
-      right: 25px;
+      top: 10px;
+      right: 150px; /* moved left from Buy Boost area */
       display: none;
       align-items: center;
       gap: 8px;
-      background: rgba(120, 90, 255, 0.2);
+      background: rgba(120, 90, 255, 0.15);
       border: 1px solid rgba(180, 140, 255, 0.3);
       padding: 8px 15px;
       border-radius: 12px;
-      color: #cba6ff;
+      color: #d1b3ff;
       font-size: 0.9rem;
       backdrop-filter: blur(8px);
-      box-shadow: 0 0 15px rgba(160, 100, 255, 0.4);
+      box-shadow: 0 0 12px rgba(160, 100, 255, 0.4);
       animation: fadeIn 0.4s ease;
+      z-index: 5;
     }
 
     .pulse-dot {
@@ -251,19 +253,16 @@
 
     let adminMode = false;
 
-    // Ora curentă
     function updateTime() {
       const now = new Date();
       timeEl.textContent = now.toLocaleTimeString();
     }
     updateTime();
 
-    // Încarcă stocurile salvate
     window.addEventListener("load", () => {
       cards.forEach(updateFromStorage);
     });
 
-    // Admin Panel
     adminBtn.addEventListener("click", () => {
       if (!adminMode) {
         const pass = prompt("🔐 Introdu parola admin:");
@@ -289,7 +288,6 @@
       }
     });
 
-    // Când se editează stocul
     cards.forEach(card => {
       const stock = card.querySelector(".stock");
       stock.addEventListener("blur", () => {
@@ -305,19 +303,16 @@
       });
     });
 
-    // Refresh Stock
     refreshBtn.addEventListener("click", () => {
       cards.forEach(updateFromStorage);
       updateTime();
       showToast("🔄 Stocurile au fost reîncărcate!");
     });
 
-    // Buy Boost → shop link
     buyBtn.addEventListener("click", () => {
       window.open("https://thund3r-store.mysellauth.com/", "_blank");
     });
 
-    // Funcții utile
     function updateFromStorage(card) {
       const key = card.dataset.product;
       const saved = localStorage.getItem(key);
