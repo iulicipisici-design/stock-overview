@@ -90,13 +90,20 @@
       justify-content: center;
     }
 
+    /* ---- CARD DESIGN (MOV GRADIENT) ---- */
     .card {
-      background: linear-gradient(to bottom right, #1a1c2b, #11131f);
+      background: linear-gradient(to bottom right, #20152f, #130c23);
       border-radius: 16px;
       padding: 25px;
       width: 280px;
       box-shadow: 0 0 20px rgba(0,0,0,0.4);
-      border-top: 3px solid rgba(120, 100, 255, 0.4);
+      border-top: 3px solid rgba(160, 90, 255, 0.5);
+      transition: 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 0 25px rgba(160, 90, 255, 0.4);
     }
 
     .card h2 {
@@ -108,7 +115,7 @@
     .stock {
       font-size: 2.5rem;
       font-weight: 700;
-      background: linear-gradient(90deg, #f0ca4c, #8cb7ff);
+      background: linear-gradient(90deg, #b983ff, #e2a9ff);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       cursor: text;
@@ -140,7 +147,7 @@
 
     .refresh {
       margin-top: 40px;
-      background: linear-gradient(90deg, #4a9fff, #6e71ff);
+      background: linear-gradient(90deg, #a36bff, #c289ff);
       border: none;
       color: white;
       padding: 12px 28px;
@@ -171,7 +178,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Admin indicator — stays above but not overlapping Buy Boost */
+    /* Admin indicator */
     .admin-indicator {
       position: fixed;
       top: 10px;
@@ -253,20 +260,17 @@
 
     let adminMode = false;
 
-    // 🕒 Actualizare oră în timp real
     function updateTime() {
       const now = new Date();
       timeEl.textContent = now.toLocaleTimeString();
     }
     updateTime();
-    setInterval(updateTime, 1000); // actualizează la fiecare secundă
+    setInterval(updateTime, 1000);
 
-    // Încarcă stocurile salvate
     window.addEventListener("load", () => {
       cards.forEach(updateFromStorage);
     });
 
-    // Admin login/logout
     adminBtn.addEventListener("click", () => {
       if (!adminMode) {
         const pass = prompt("🔐 Introdu parola admin:");
@@ -283,7 +287,7 @@
         }
       } else {
         adminMode = false;
-        adminBtn.textContent = "Admin Panel";
+        adminBtn.textContent = "⚡ Admin Panel";
         cards.forEach(card => {
           card.querySelector(".stock").setAttribute("contenteditable", "false");
         });
@@ -292,7 +296,6 @@
       }
     });
 
-    // Salvare modificări stoc
     cards.forEach(card => {
       const stock = card.querySelector(".stock");
       stock.addEventListener("blur", () => {
@@ -308,13 +311,11 @@
       });
     });
 
-    // Refresh stocuri din localStorage
     refreshBtn.addEventListener("click", () => {
       cards.forEach(updateFromStorage);
       showToast("🔄 Stocurile au fost reîncărcate!");
     });
 
-    // Buton cumpărare
     buyBtn.addEventListener("click", () => {
       window.open("https://thund3r-store.mysellauth.com/", "_blank");
     });
@@ -354,4 +355,3 @@
 
 </body>
 </html>
-
