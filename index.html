@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>THUND3R STORE | Stock Overview</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap');
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap");
 
     body {
       background: radial-gradient(circle at top left, #0e0f1a, #0b0c15);
       color: white;
-      font-family: 'Inter', sans-serif;
+      font-family: "Inter", sans-serif;
       margin: 0;
       min-height: 100vh;
       display: flex;
@@ -36,7 +36,7 @@
       border-radius: 10px;
       font-weight: 600;
       font-size: 14px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.3);
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
     }
 
     .nav-buttons {
@@ -83,109 +83,100 @@
       margin-bottom: 30px;
     }
 
+    /* --- CARD DESIGN --- */
     .cards {
       display: flex;
-      gap: 40px;
+      gap: 25px;
       flex-wrap: wrap;
       justify-content: center;
     }
 
-    /* ==== CARD DESIGN ACTUALIZAT ==== */
     .card {
       position: relative;
-      background: linear-gradient(180deg, #1a1b27 0%, #13141f 100%);
+      background: linear-gradient(145deg, rgba(124, 77, 255, 0.1), rgba(200, 138, 255, 0.05));
       border-radius: 20px;
-      padding: 28px;
-      width: 300px;
-      box-shadow: 0 0 25px rgba(124, 77, 255, 0.15);
-      border: 1px solid rgba(155, 109, 255, 0.25);
-      overflow: hidden;
+      padding: 25px;
+      width: 280px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 25px rgba(124, 77, 255, 0.3);
+      border: 1px solid rgba(200, 138, 255, 0.25);
       transition: all 0.3s ease;
     }
 
     .card::before {
       content: "";
       position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(155,109,255,0.15) 0%, transparent 60%);
-      transform: rotate(25deg);
-      opacity: 0.5;
-      z-index: 0;
+      inset: 0;
+      border-radius: 20px;
+      padding: 2px;
+      background: linear-gradient(135deg, #7c4dff, #c88aff);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
     }
 
     .card:hover {
       transform: translateY(-6px);
-      box-shadow: 0 0 40px rgba(155, 109, 255, 0.35);
-      border-color: rgba(155, 109, 255, 0.5);
+      box-shadow: 0 0 35px rgba(200, 138, 255, 0.5);
     }
 
     .card img {
-      position: relative;
-      z-index: 1;
       width: 48px;
       height: 48px;
-      margin-bottom: 15px;
+      filter: drop-shadow(0 0 10px rgba(200, 138, 255, 0.7));
     }
 
     .card h2 {
-      position: relative;
-      z-index: 1;
-      font-size: 1.15rem;
+      font-size: 1.2rem;
+      margin: 15px 0 10px 0;
       font-weight: 600;
-      color: #fff;
-      margin-bottom: 20px;
+      color: #ffffff;
     }
 
     .stock {
-      position: relative;
-      z-index: 1;
-      font-size: 2.7rem;
+      font-size: 2.5rem;
       font-weight: 700;
-      background: linear-gradient(90deg, #b57dff, #d6a6ff);
+      background: linear-gradient(90deg, #f0ca4c, #c88aff);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 15px rgba(155, 109, 255, 0.25);
+      cursor: text;
     }
 
     .status {
-      position: relative;
-      z-index: 1;
-      margin-top: 20px;
+      margin-top: 15px;
       display: inline-block;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 600;
-      padding: 6px 16px;
+      padding: 6px 14px;
       border-radius: 9999px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s;
     }
 
     .in-stock {
-      background: rgba(0, 255, 136, 0.1);
-      color: #00ff84;
-      box-shadow: 0 0 10px rgba(0, 255, 136, 0.15);
+      color: #00ff9d;
+      border-color: rgba(0, 255, 157, 0.4);
+      box-shadow: 0 0 10px rgba(0, 255, 157, 0.2);
     }
 
     .low-stock {
-      background: rgba(255, 193, 7, 0.1);
       color: #ffc74c;
-      box-shadow: 0 0 10px rgba(255, 193, 7, 0.15);
+      border-color: rgba(255, 199, 76, 0.4);
+      box-shadow: 0 0 10px rgba(255, 199, 76, 0.2);
     }
 
     .out-stock {
-      background: rgba(255, 60, 60, 0.1);
       color: #ff4d4d;
-      box-shadow: 0 0 10px rgba(255, 60, 60, 0.15);
+      border-color: rgba(255, 77, 77, 0.4);
+      box-shadow: 0 0 10px rgba(255, 77, 77, 0.2);
     }
-
-    /* ==== FINAL CARD DESIGN ==== */
 
     .refresh {
       margin-top: 40px;
-      background: linear-gradient(90deg, #4a9fff, #6e71ff);
+      background: linear-gradient(90deg, #7c4dff, #c88aff);
       border: none;
       color: white;
       padding: 12px 28px;
@@ -204,10 +195,10 @@
       position: fixed;
       bottom: 25px;
       right: 25px;
-      background: linear-gradient(90deg, #7357ff, #9d6fff);
+      background: linear-gradient(90deg, #7c4dff, #c88aff);
       padding: 12px 20px;
       border-radius: 10px;
-      box-shadow: 0 0 20px rgba(115, 87, 255, 0.4);
+      box-shadow: 0 0 20px rgba(200, 138, 255, 0.4);
       animation: fadeIn 0.4s ease;
     }
 
@@ -252,7 +243,6 @@
   </style>
 </head>
 <body>
-
   <div class="navbar">
     <div class="logo" id="logo">THUND3R STORE | Boost Bot</div>
     <div class="nav-buttons">
@@ -314,7 +304,7 @@
         if (pass === "admin123") {
           adminMode = true;
           adminBtn.textContent = "🟢 Admin Mode ON";
-          cards.forEach(card => {
+          cards.forEach((card) => {
             card.querySelector(".stock").setAttribute("contenteditable", "true");
           });
           adminIndicator.style.display = "flex";
@@ -325,7 +315,7 @@
       } else {
         adminMode = false;
         adminBtn.textContent = "⚡ Admin Panel";
-        cards.forEach(card => {
+        cards.forEach((card) => {
           card.querySelector(".stock").setAttribute("contenteditable", "false");
         });
         adminIndicator.style.display = "none";
@@ -333,7 +323,7 @@
       }
     });
 
-    cards.forEach(card => {
+    cards.forEach((card) => {
       const stock = card.querySelector(".stock");
       stock.addEventListener("blur", () => {
         if (!adminMode) return;
