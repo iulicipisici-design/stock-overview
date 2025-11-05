@@ -171,11 +171,11 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Admin indicator — moved higher to avoid overlap */
+    /* Admin indicator — stays above but not overlapping Buy Boost */
     .admin-indicator {
       position: fixed;
       top: 10px;
-      right: 150px; /* moved left from Buy Boost area */
+      right: 150px;
       display: none;
       align-items: center;
       gap: 8px;
@@ -253,16 +253,20 @@
 
     let adminMode = false;
 
+    // 🕒 Actualizare oră în timp real
     function updateTime() {
       const now = new Date();
       timeEl.textContent = now.toLocaleTimeString();
     }
     updateTime();
+    setInterval(updateTime, 1000); // actualizează la fiecare secundă
 
+    // Încarcă stocurile salvate
     window.addEventListener("load", () => {
       cards.forEach(updateFromStorage);
     });
 
+    // Admin login/logout
     adminBtn.addEventListener("click", () => {
       if (!adminMode) {
         const pass = prompt("🔐 Introdu parola admin:");
@@ -288,6 +292,7 @@
       }
     });
 
+    // Salvare modificări stoc
     cards.forEach(card => {
       const stock = card.querySelector(".stock");
       stock.addEventListener("blur", () => {
@@ -303,12 +308,13 @@
       });
     });
 
+    // Refresh stocuri din localStorage
     refreshBtn.addEventListener("click", () => {
       cards.forEach(updateFromStorage);
-      updateTime();
       showToast("🔄 Stocurile au fost reîncărcate!");
     });
 
+    // Buton cumpărare
     buyBtn.addEventListener("click", () => {
       window.open("https://thund3r-store.mysellauth.com/", "_blank");
     });
