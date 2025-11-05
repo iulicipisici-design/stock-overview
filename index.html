@@ -1,357 +1,466 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ro">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>THUND3R STORE | Stock Overview</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap');
-
-    body {
-      background: radial-gradient(circle at top left, #0e0f1a, #0b0c15);
-      color: white;
-      font-family: 'Inter', sans-serif;
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+    :root{
+      --bg1: #071226;
+      --bg2: #081126;
+      --card-bg-1: rgba(18,22,34,0.9);
+      --card-bg-2: rgba(13,16,25,0.9);
+      --accent1: #ffd56b; /* yellow */
+      --accent2: #8fa7ff; /* blue */
+      --violet1: #9d6fff;
+      --violet2: #5f2bd7;
+      --glass: rgba(255,255,255,0.03);
     }
 
-    .navbar {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      right: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 10;
+    /* page bg with subtle grid like in screenshot */
+    html,body{height:100%}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:
+        linear-gradient(180deg, rgba(8,12,22,0.95) 0%, rgba(6,8,16,0.95) 100%),
+        radial-gradient(circle at 10% 10%, rgba(30,22,60,0.06), transparent 8%),
+        linear-gradient(90deg, rgba(255,255,255,0.01) 0%, rgba(255,255,255,0.01) 100%);
+      color:#e6eef8;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:28px;
+      padding:34px 28px 60px;
+      box-sizing:border-box;
     }
 
-    .logo {
-      background: rgba(255, 255, 255, 0.05);
-      padding: 8px 18px;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 14px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.3);
+    /* subtle grid overlay */
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+      background-size: 60px 60px, 60px 60px;
+      pointer-events:none;
+      mix-blend-mode:overlay;
+      opacity:0.6;
     }
 
-    .nav-buttons {
-      display: flex;
-      gap: 10px;
+    /* header / nav */
+    .topbar{
+      position:fixed;
+      left:28px;
+      right:28px;
+      top:18px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      z-index:30;
+    }
+    .brand{
+      background: rgba(255,255,255,0.03);
+      padding:8px 14px;
+      border-radius:12px;
+      font-weight:700;
+      font-size:14px;
+      box-shadow: 0 6px 18px rgba(5,6,12,0.6);
+      color:#dfe9ff;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
     }
 
-    .nav-btn {
-      border: none;
-      outline: none;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      padding: 10px 20px;
-      transition: 0.25s;
+    .controls{display:flex;gap:12px;align-items:center}
+    .pill-btn{
+      border:0;
+      outline:0;
+      padding:9px 14px;
+      border-radius:12px;
+      font-weight:700;
+      cursor:pointer;
+      box-shadow: 0 6px 18px rgba(5,6,12,0.6);
+    }
+    .pill-btn.green{ background: linear-gradient(90deg,#26c071,#00b06b); color:white; }
+    .pill-btn.purple{ background: linear-gradient(90deg,#7e63ff,#b183ff); color:white; }
+
+    /* title area */
+    .title-wrap{ margin-top:42px; text-align:center; }
+    .title-row{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      justify-content:center;
+    }
+    .gear{
+      width:46px;height:46px;border-radius:10px;
+      display:inline-grid;place-items:center;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.02), 0 12px 30px rgba(94,45,215,0.08);
+    }
+    h1{ font-size:40px; margin:0; font-weight:800; letter-spacing:-0.02em; color: #f6f7fb; }
+    .updated{
+      margin-top:8px;
+      background: rgba(255,255,255,0.03);
+      padding:8px 14px;
+      border-radius:12px;
+      display:inline-block;
+      color:#a7b0c6;
+      font-weight:600;
+      font-size:14px;
+      box-shadow: 0 6px 18px rgba(4,6,12,0.5);
     }
 
-    .nav-btn.green {
-      background: #00b76b;
-      color: white;
+    /* cards container */
+    .cards{
+      display:flex;
+      gap:28px;
+      margin-top:8px;
+      align-items:stretch;
+      justify-content:center;
+      flex-wrap:wrap;
+      width:100%;
+      max-width:1140px;
     }
 
-    .nav-btn.purple {
-      background: #7357ff;
-      color: white;
+    /* individual card */
+    .card{
+      width:520px;
+      min-height:240px;
+      border-radius:14px;
+      padding:20px 22px;
+      position:relative;
+      box-sizing:border-box;
+      background: linear-gradient(180deg, rgba(20,22,34,0.85), rgba(12,14,22,0.82));
+      border: 1px solid rgba(255,255,255,0.02);
+      box-shadow:
+        0 10px 30px rgba(6,7,12,0.6),
+        inset 0 1px 0 rgba(255,255,255,0.02);
+      overflow:hidden;
+      display:flex;
+      gap:18px;
+      align-items:center;
     }
 
-    .nav-btn.green:hover,
-    .nav-btn.purple:hover {
-      filter: brightness(1.15);
-      transform: translateY(-2px);
+    /* top accent stripe like in image */
+    .card::before{
+      content:"";
+      position:absolute;
+      left:12px;
+      right:12px;
+      top:8px;
+      height:6px;
+      border-radius:10px;
+      background: linear-gradient(90deg, var(--accent1), var(--violet1), var(--violet2), var(--accent2));
+      filter:drop-shadow(0 6px 14px rgba(95,43,215,0.12));
+      z-index:6;
     }
 
-    h1 {
-      font-size: 2.3rem;
-      margin-top: 80px;
-      margin-bottom: 10px;
-      font-weight: 700;
+    /* left icon box */
+    .icon-box{
+      width:86px;height:86px;border-radius:14px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      display:flex;align-items:center;justify-content:center;
+      box-shadow: 0 8px 30px rgba(25,16,58,0.45);
+      border:1px solid rgba(255,255,255,0.03);
+      margin-left:8px;
+      z-index:8;
+      flex-shrink:0;
+    }
+    .icon-box img{ width:48px;height:48px; }
+
+    .card-body{
+      flex:1;
+      padding:4px 10px 4px 4px;
+      z-index:8;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .card h2{
+      margin:0;
+      font-size:20px;
+      font-weight:700;
+      color:#eaf0ff;
+      display:flex;
+      align-items:center;
+      gap:10px;
     }
 
-    .updated {
-      font-size: 0.9rem;
-      color: #a0a0a0;
-      margin-bottom: 30px;
+    /* the big stock number area */
+    .stock-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-top:8px;
     }
 
-    .cards {
-      display: flex;
-      gap: 25px;
-      flex-wrap: wrap;
-      justify-content: center;
+    .stock-box{
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.015));
+      border-radius:12px;
+      padding:18px 22px;
+      min-width:220px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.02), 0 8px 18px rgba(0,0,0,0.6);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      border:1px solid rgba(255,255,255,0.02);
     }
 
-    /* ---- CARD DESIGN (MOV GRADIENT) ---- */
-    .card {
-      background: linear-gradient(to bottom right, #20152f, #130c23);
-      border-radius: 16px;
-      padding: 25px;
-      width: 280px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.4);
-      border-top: 3px solid rgba(160, 90, 255, 0.5);
-      transition: 0.3s;
+    .label-small{ color:#95a0bd; font-weight:700; font-size:13px; letter-spacing:1px; text-transform:uppercase; }
+
+    .stock-number{
+      font-weight:800;
+      font-size:44px;
+      letter-spacing:-0.02em;
+      background: linear-gradient(90deg, #ffd56b 0%, #e2a0ff 45%, #8fb6ff 100%);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      text-shadow: 0 6px 24px rgba(100,40,200,0.12);
     }
 
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 0 25px rgba(160, 90, 255, 0.4);
+    /* pill status with dot */
+    .status-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:8px 14px;
+      border-radius:999px;
+      font-weight:800;
+      font-size:13px;
+      box-shadow: 0 6px 18px rgba(7,8,14,0.6);
+      border:1px solid rgba(255,255,255,0.02);
+    }
+    .status-dot{ width:10px;height:10px;border-radius:50%;box-shadow:0 0 10px rgba(0,0,0,0.5); }
+    .in { background: rgba(0,255,136,0.06); color:#7fffcf; border-color: rgba(0,255,136,0.06);}
+    .in .status-dot{ background: #00ff84; box-shadow:0 0 12px #00ff84; }
+    .low { background: rgba(255,200,50,0.06); color:#ffd071; border-color: rgba(255,200,50,0.06);}
+    .low .status-dot{ background:#ffc74c; box-shadow:0 0 10px #ffc74c; }
+    .out { background: rgba(255,80,80,0.05); color:#ff9b9b; border-color: rgba(255,80,80,0.05);}
+    .out .status-dot{ background:#ff6b6b; box-shadow:0 0 10px #ff6b6b; }
+
+    /* right-side small info column */
+    .meta{
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      align-items:flex-end;
+      justify-content:flex-start;
+      min-width:120px;
+      z-index:8;
+      padding-right:6px;
+    }
+    .meta .small-card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));
+      border-radius:10px;
+      padding:10px 12px;
+      font-weight:700;
+      font-size:13px;
+      color:#d7e0ff;
+      border:1px solid rgba(255,255,255,0.02);
+      text-align:center;
+      min-width:110px;
+      box-shadow: 0 8px 22px rgba(20,18,40,0.5);
     }
 
-    .card h2 {
-      font-size: 1.2rem;
-      margin: 15px 0 10px 0;
-      font-weight: 600;
+    /* refresh center button */
+    .refresh-wrap{ width:100%; display:flex; justify-content:center; margin-top:12px; }
+    .refresh-btn{
+      background: linear-gradient(90deg,var(--violet1),var(--violet2));
+      border:0;
+      color:white;
+      padding:12px 26px;
+      border-radius:12px;
+      font-weight:800;
+      box-shadow: 0 14px 40px rgba(95,43,215,0.18);
+      cursor:pointer;
+      font-size:15px;
     }
 
-    .stock {
-      font-size: 2.5rem;
-      font-weight: 700;
-      background: linear-gradient(90deg, #b983ff, #e2a9ff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      cursor: text;
+    /* small responsive */
+    @media (max-width:1150px){
+      .card{ width:100%; max-width:760px; }
     }
-
-    .status {
-      margin-top: 15px;
-      display: inline-block;
-      font-size: 0.85rem;
-      font-weight: 600;
-      padding: 6px 14px;
-      border-radius: 9999px;
-    }
-
-    .in-stock {
-      background: rgba(0,255,136,0.1);
-      color: #00ff84;
-    }
-
-    .low-stock {
-      background: rgba(255,200,50,0.1);
-      color: #ffc74c;
-    }
-
-    .out-stock {
-      background: rgba(255,60,60,0.1);
-      color: #ff4d4d;
-    }
-
-    .refresh {
-      margin-top: 40px;
-      background: linear-gradient(90deg, #a36bff, #c289ff);
-      border: none;
-      color: white;
-      padding: 12px 28px;
-      border-radius: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.25s;
-    }
-
-    .refresh:hover {
-      filter: brightness(1.15);
-      transform: translateY(-2px);
-    }
-
-    .toast {
-      position: fixed;
-      bottom: 25px;
-      right: 25px;
-      background: linear-gradient(90deg, #7357ff, #9d6fff);
-      padding: 12px 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(115, 87, 255, 0.4);
-      animation: fadeIn 0.4s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Admin indicator */
-    .admin-indicator {
-      position: fixed;
-      top: 10px;
-      right: 150px;
-      display: none;
-      align-items: center;
-      gap: 8px;
-      background: rgba(120, 90, 255, 0.15);
-      border: 1px solid rgba(180, 140, 255, 0.3);
-      padding: 8px 15px;
-      border-radius: 12px;
-      color: #d1b3ff;
-      font-size: 0.9rem;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 0 12px rgba(160, 100, 255, 0.4);
-      animation: fadeIn 0.4s ease;
-      z-index: 5;
-    }
-
-    .pulse-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #c86bff;
-      box-shadow: 0 0 8px #c86bff;
-      animation: pulse 1.2s infinite ease-in-out;
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.6); opacity: 0.6; }
-      100% { transform: scale(1); opacity: 1; }
+    @media (max-width:720px){
+      .cards{ flex-direction:column; gap:18px; padding:0 12px; }
+      .meta{ align-items:flex-start; }
+      .title-row{ flex-direction:column; gap:6px; }
     }
   </style>
 </head>
 <body>
 
-  <div class="navbar">
-    <div class="logo" id="logo">THUND3R STORE | Boost Bot</div>
-    <div class="nav-buttons">
-      <button class="nav-btn purple" id="adminBtn">⚡ Admin Panel</button>
-      <button class="nav-btn green" id="buyBtn">🛒 Buy Boost</button>
+  <div class="topbar">
+    <div class="brand">THUND3R STORE | Boost Bot</div>
+    <div class="controls">
+      <button class="pill-btn green" id="stockBtn">📦 Stock 0-3m</button>
+      <button class="pill-btn purple" id="redeemBtn">🎁 Redeem</button>
+      <button class="pill-btn" style="background:linear-gradient(90deg,#26c071,#00b06b); color:white;" id="buyBtn">🛒 Buy Bot</button>
     </div>
   </div>
 
-  <div class="admin-indicator" id="adminIndicator">
-    <div class="pulse-dot"></div>
-    <span>Admin Active</span>
+  <div class="title-wrap">
+    <div class="title-row">
+      <div class="gear">⚙️</div>
+      <h1>Stock Overview</h1>
+    </div>
+    <div class="updated">Last updated: <span id="time">--:--:--</span></div>
   </div>
-
-  <h1>Stock Overview</h1>
-  <div class="updated">Last updated: <span id="time"></span></div>
 
   <div class="cards">
+    <!-- CARD 1 -->
     <div class="card" data-product="1month">
-      <img src="https://cdn-icons-png.flaticon.com/512/565/565547.png" width="40" alt="">
-      <h2>Server Boosts (1 Month)</h2>
-      <div class="stock" contenteditable="false">246</div>
-      <div class="status in-stock">🟢 IN STOCK</div>
+      <div class="icon-box"><img src="https://cdn-icons-png.flaticon.com/512/565/565547.png" alt="rocket"></div>
+
+      <div class="card-body">
+        <h2>Server Boosts (1 Month)</h2>
+
+        <div class="stock-row">
+          <div class="stock-box">
+            <div>
+              <div class="label-small">Stock Available</div>
+              <div class="stock-number" id="stock-1">246</div>
+            </div>
+            <div style="min-width:10px"></div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+            <div class="status-pill in" id="status-1"><div class="status-dot"></div>IN STOCK</div>
+            <div style="height:8px"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="meta">
+        <div class="small-card">1 Month</div>
+        <div class="small-card">Fast Delivery</div>
+      </div>
     </div>
 
+    <!-- CARD 2 -->
     <div class="card" data-product="3months">
-      <img src="https://cdn-icons-png.flaticon.com/512/833/833472.png" width="40" alt="">
-      <h2>Server Boosts (3 Months)</h2>
-      <div class="stock" contenteditable="false">12</div>
-      <div class="status low-stock">🟠 LOW STOCK</div>
+      <div class="icon-box"><img src="https://cdn-icons-png.flaticon.com/512/833/833472.png" alt="bolt"></div>
+
+      <div class="card-body">
+        <h2>Server Boosts (3 Months)</h2>
+
+        <div class="stock-row">
+          <div class="stock-box">
+            <div>
+              <div class="label-small">Stock Available</div>
+              <div class="stock-number" id="stock-2">12</div>
+            </div>
+            <div style="min-width:10px"></div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+            <div class="status-pill low" id="status-2"><div class="status-dot"></div>LOW STOCK</div>
+            <div style="height:8px"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="meta">
+        <div class="small-card">3 Months</div>
+        <div class="small-card">Limited</div>
+      </div>
     </div>
   </div>
 
-  <button class="refresh" id="refreshBtn">🔄 Refresh Stock</button>
+  <div class="refresh-wrap">
+    <button class="refresh-btn" id="refreshBtn">🔄 Refresh Stock</button>
+  </div>
 
   <script>
-    const cards = document.querySelectorAll(".card");
-    const adminBtn = document.getElementById("adminBtn");
-    const refreshBtn = document.getElementById("refreshBtn");
-    const buyBtn = document.getElementById("buyBtn");
-    const timeEl = document.getElementById("time");
-    const adminIndicator = document.getElementById("adminIndicator");
+    // time update
+    const timeEl = document.getElementById('time');
+    function tick(){ timeEl.textContent = new Date().toLocaleTimeString(); }
+    tick(); setInterval(tick,1000);
 
-    let adminMode = false;
-
-    function updateTime() {
-      const now = new Date();
-      timeEl.textContent = now.toLocaleTimeString();
+    // load from localStorage if exists
+    function loadStock(){
+      const s1 = localStorage.getItem('1month');
+      const s2 = localStorage.getItem('3months');
+      if(s1!==null) document.getElementById('stock-1').textContent = s1;
+      if(s2!==null) document.getElementById('stock-2').textContent = s2;
+      updateStatusFromUI();
     }
-    updateTime();
-    setInterval(updateTime, 1000);
 
-    window.addEventListener("load", () => {
-      cards.forEach(updateFromStorage);
-    });
+    function updateStatusFromUI(){
+      const v1 = parseInt(document.getElementById('stock-1').textContent)||0;
+      const v2 = parseInt(document.getElementById('stock-2').textContent)||0;
+      updatePill('status-1', v1);
+      updatePill('status-2', v2);
+    }
 
-    adminBtn.addEventListener("click", () => {
-      if (!adminMode) {
-        const pass = prompt("🔐 Introdu parola admin:");
-        if (pass === "admin123") {
-          adminMode = true;
-          adminBtn.textContent = "🟢 Admin Mode ON";
-          cards.forEach(card => {
-            card.querySelector(".stock").setAttribute("contenteditable", "true");
-          });
-          adminIndicator.style.display = "flex";
-          showToast("✅ Modul ADMIN activat!");
-        } else {
-          showToast("❌ Parolă greșită!");
-        }
+    function updatePill(id, value){
+      const el = document.getElementById(id);
+      if(value <= 0){
+        el.className = 'status-pill out';
+        el.innerHTML = '<div class="status-dot"></div>OUT OF STOCK';
+      } else if(value <= 20){
+        el.className = 'status-pill low';
+        el.innerHTML = '<div class="status-dot"></div>LOW STOCK';
       } else {
-        adminMode = false;
-        adminBtn.textContent = "⚡ Admin Panel";
-        cards.forEach(card => {
-          card.querySelector(".stock").setAttribute("contenteditable", "false");
-        });
-        adminIndicator.style.display = "none";
-        showToast("🔒 Modul ADMIN dezactivat!");
+        el.className = 'status-pill in';
+        el.innerHTML = '<div class="status-dot"></div>IN STOCK';
       }
-    });
+    }
 
-    cards.forEach(card => {
-      const stock = card.querySelector(".stock");
-      stock.addEventListener("blur", () => {
-        if (!adminMode) return;
-        const value = stock.textContent.trim();
-        if (!isNaN(value)) {
-          localStorage.setItem(card.dataset.product, value);
-          updateStatus(card, value);
-          showToast("💾 Stoc salvat!");
+    // simple admin edit (double click to edit then blur to save) - optional
+    document.querySelectorAll('.stock-number').forEach(sn=>{
+      sn.setAttribute('contenteditable', 'false');
+      sn.style.cursor = 'default';
+
+      sn.addEventListener('dblclick', ()=>{
+        const pass = prompt('Parola admin ca sa modifici stocul:');
+        if(pass === 'admin123'){
+          sn.setAttribute('contenteditable','true');
+          sn.focus();
+          sn.style.cursor = 'text';
         } else {
-          showToast("⚠️ Introdu doar numere!");
+          alert('Parolă greșită.');
         }
+      });
+
+      sn.addEventListener('blur', (e)=>{
+        sn.setAttribute('contenteditable','false');
+        sn.style.cursor='default';
+        // sanitize number
+        let v = sn.textContent.replace(/[^\d]/g,'').trim();
+        if(v==='') v='0';
+        sn.textContent = v;
+        // save to localStorage
+        if(sn.id === 'stock-1') localStorage.setItem('1month', v);
+        if(sn.id === 'stock-2') localStorage.setItem('3months', v);
+        updateStatusFromUI();
       });
     });
 
-    refreshBtn.addEventListener("click", () => {
-      cards.forEach(updateFromStorage);
-      showToast("🔄 Stocurile au fost reîncărcate!");
+    document.getElementById('refreshBtn').addEventListener('click', ()=>{
+      loadStock();
+      // small temporary toast
+      const t = document.createElement('div');
+      t.textContent = '🔄 Stocurile au fost reîncărcate';
+      Object.assign(t.style,{position:'fixed',right:'22px',bottom:'22px',padding:'10px 14px',borderRadius:'10px',background:'linear-gradient(90deg,#7e63ff,#b183ff)',color:'#fff',boxShadow:'0 12px 30px rgba(94,45,215,0.18)',zIndex:2000,fontWeight:800});
+      document.body.appendChild(t);
+      setTimeout(()=>t.remove(),2200);
     });
 
-    buyBtn.addEventListener("click", () => {
-      window.open("https://thund3r-store.mysellauth.com/", "_blank");
-    });
+    // open buy link
+    document.getElementById('buyBtn').addEventListener('click', ()=> window.open('https://thund3r-store.mysellauth.com/','_blank'));
+    document.getElementById('redeemBtn').addEventListener('click', ()=> alert('Redeem clicked'));
+    document.getElementById('stockBtn').addEventListener('click', ()=> alert('Stock 0-3m clicked'));
 
-    function updateFromStorage(card) {
-      const key = card.dataset.product;
-      const saved = localStorage.getItem(key);
-      if (saved !== null) {
-        card.querySelector(".stock").textContent = saved;
-        updateStatus(card, saved);
-      }
-    }
-
-    function updateStatus(card, value) {
-      const num = parseInt(value);
-      const status = card.querySelector(".status");
-      if (num <= 0) {
-        status.textContent = "🔴 OUT OF STOCK";
-        status.className = "status out-stock";
-      } else if (num <= 20) {
-        status.textContent = "🟠 LOW STOCK";
-        status.className = "status low-stock";
-      } else {
-        status.textContent = "🟢 IN STOCK";
-        status.className = "status in-stock";
-      }
-    }
-
-    function showToast(msg) {
-      const toast = document.createElement("div");
-      toast.className = "toast";
-      toast.textContent = msg;
-      document.body.appendChild(toast);
-      setTimeout(() => toast.remove(), 2500);
-    }
+    // init
+    loadStock();
   </script>
-
 </body>
 </html>
