@@ -9,26 +9,20 @@
   :root{
     --bg1:#07101a;
     --bg2:#09141d;
-    --card:#0f1720;
-    --card-inner:#13202a;
     --muted:#9aa3ad;
-    --glass: rgba(255,255,255,0.03);
   }
-
   *{box-sizing:border-box}
-  html,body{height:100%}
   body{
     margin:0;
-    font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
-    background: linear-gradient(180deg,#041017 0%, #07121a 60%);
+    font-family:Inter,system-ui;
+    background:linear-gradient(180deg,#041017 0%,#07121a 60%);
     display:flex;
     align-items:center;
     justify-content:center;
     color:#e9eef6;
     padding:36px;
+    min-height:100vh;
   }
-
-  /* layout */
   .wrap{
     width:100%;
     max-width:1180px;
@@ -37,344 +31,144 @@
     justify-content:center;
     align-items:flex-start;
   }
-
-  /* card specifics to match image */
   .card{
-    width:460px;               /* match wide card proportions */
+    width:460px;
     border-radius:18px;
     padding:22px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(0,0,0,0.16));
-    box-shadow:
-      0 6px 22px rgba(2,4,10,0.7),
-      inset 0 1px 0 rgba(255,255,255,0.02);
+    background:linear-gradient(180deg,rgba(255,255,255,0.015),rgba(0,0,0,0.16));
+    box-shadow:0 6px 22px rgba(2,4,10,0.7),inset 0 1px 0 rgba(255,255,255,0.02);
     position:relative;
-    overflow:visible;
-    border: 1px solid rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.03);
   }
-
-  /* thin rounded top accent like in image */
   .card::before{
     content:"";
     position:absolute;
-    top:-6px;
-    left:14px;
-    right:14px;
-    height:6px;
-    border-radius:8px;
-    background: linear-gradient(90deg, #f1c64a 0%, #7eaaff 50%, #6b8bff 100%);
-    box-shadow: 0 6px 20px rgba(120,120,255,0.06);
+    top:-6px;left:14px;right:14px;height:6px;border-radius:8px;
+    background:linear-gradient(90deg,#f1c64a 0%,#7eaaff 50%,#6b8bff 100%);
   }
-
-  /* icon bubble top-left */
-  .card-head{
-    display:flex;
-    align-items:center;
-    gap:14px;
-  }
-
+  .card-head{display:flex;align-items:center;gap:14px;}
   .icon{
-    width:62px;
-    height:62px;
-    border-radius:14px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.18));
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    box-shadow: 0 6px 16px rgba(2,6,12,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
-    flex-shrink:0;
+    width:62px;height:62px;border-radius:14px;
+    background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(0,0,0,0.18));
+    display:flex;align-items:center;justify-content:center;
   }
-
   .icon img{width:34px;height:34px}
-
-  .title{
-    font-weight:800;
-    font-size:20px;
-    letter-spacing:0.1px;
-    margin:6px 0 0 0;
-    color:#f6f7fb;
-  }
-
-  /* inner "stock available" box */
+  .title{font-weight:800;font-size:20px;margin:6px 0 0;}
   .stock-outer{
-    margin-top:18px;
-    background: rgba(255,255,255,0.02);
-    padding:18px;
-    border-radius:12px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:14px;
-    border:1px solid rgba(255,255,255,0.02);
-    backdrop-filter: blur(6px);
+    margin-top:18px;background:rgba(255,255,255,0.02);padding:18px;
+    border-radius:12px;display:flex;align-items:center;justify-content:space-between;
   }
-
-  .stock-label{
-    color:var(--muted);
-    font-weight:700;
-    font-size:12px;
-    letter-spacing:1.6px;
-  }
-
+  .stock-label{color:var(--muted);font-weight:700;font-size:12px;letter-spacing:1.6px;}
   .stock-num{
-    font-weight:800;
-    font-size:44px;
-    line-height:1;
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
-    background: linear-gradient(90deg,#f1c64a 0%, #7eaaff 100%);
-    text-shadow: 0 6px 18px rgba(50,60,90,0.25);
-    display:inline-block;
-    min-width:92px;
-    text-align:right;
+    font-weight:800;font-size:44px;
+    background:linear-gradient(90deg,#f1c64a 0%,#7eaaff 100%);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    text-align:right;min-width:92px;
   }
-
-  /* status pill (bottom-left) */
-  .status{
-    margin-top:18px;
-    display:inline-flex;
-    align-items:center;
-    gap:10px;
-    padding:10px 18px;
-    border-radius:30px;
-    font-weight:800;
-    letter-spacing:0.6px;
-    font-size:13px;
-    box-shadow: 0 8px 22px rgba(2,6,12,0.55);
-    width:fit-content;
-  }
-
-  .status .dot{
-    width:10px;height:10px;border-radius:50%;
-    box-shadow: 0 0 8px rgba(0,0,0,0.2);
-    display:inline-block;
-  }
-
-  .in { background: linear-gradient(180deg, rgba(0,255,140,0.06), rgba(0,0,0,0.06)); color:#00ff84; border:1px solid rgba(0,255,140,0.06); }
-  .in .dot{ background:#00c96a; box-shadow:0 0 12px rgba(0,201,106,0.25); }
-
-  .low { background: linear-gradient(180deg, rgba(255,200,60,0.05), rgba(0,0,0,0.06)); color:#ffbd4e; border:1px solid rgba(255,200,60,0.05); }
-  .low .dot{ background:#ffb43a; box-shadow:0 0 12px rgba(255,180,60,0.18); }
-
-  .out { background: linear-gradient(180deg, rgba(255,60,60,0.05), rgba(0,0,0,0.06)); color:#ff6b6b; border:1px solid rgba(255,60,60,0.04); }
-  .out .dot{ background:#ff4d4d; box-shadow:0 0 12px rgba(255,77,77,0.16); }
-
-  /* small navbar buttons top-right like your original */
-  .topbar{
-    position:fixed;
-    top:18px;
-    right:20px;
-    display:flex;
-    gap:10px;
-    z-index:60;
-  }
-
-  .btn{
-    padding:8px 14px;
-    border-radius:10px;
-    border:0;
-    font-weight:700;
-    cursor:pointer;
-    color:#ffffff;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.5);
-  }
-  .btn.admin{ background: linear-gradient(90deg,#6b4bff,#7f64ff); }
-  .btn.buy{ background: linear-gradient(90deg,#10b981,#00d084); }
-
-  /* admin indicator tiny */
-  .admin-indicator{
-    position:fixed;
-    top:18px;
-    right:150px;
-    display:none;
-    align-items:center;
-    gap:8px;
-    padding:8px 12px;
-    border-radius:12px;
-    font-weight:700;
-    color:#d9c8ff;
-    background: linear-gradient(180deg, rgba(120,90,255,0.14), rgba(30,18,60,0.06));
-    box-shadow: 0 8px 28px rgba(110,60,255,0.06);
-    z-index:60;
-  }
-  .pulse{
-    width:10px;height:10px;border-radius:50%;
-    background:#c86bff; box-shadow:0 0 14px rgba(200,110,255,0.28); animation:pulse 1.2s infinite;
-  }
-  @keyframes pulse{0%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:0.6}100%{transform:scale(1);opacity:1}}
-
-  /* responsive */
-  @media(max-width:980px){
-    .wrap{flex-direction:column;align-items:center}
-    .card{width:88%}
-  }
+  .status{margin-top:18px;display:inline-flex;align-items:center;gap:10px;
+    padding:10px 18px;border-radius:30px;font-weight:800;font-size:13px;}
+  .status .dot{width:10px;height:10px;border-radius:50%;}
+  .in{background:rgba(0,255,140,0.06);color:#00ff84;}
+  .in .dot{background:#00c96a;}
+  .low{background:rgba(255,200,60,0.05);color:#ffbd4e;}
+  .low .dot{background:#ffb43a;}
+  .out{background:rgba(255,60,60,0.05);color:#ff6b6b;}
+  .out .dot{background:#ff4d4d;}
+  .topbar{position:fixed;top:18px;right:20px;display:flex;gap:10px;}
+  .btn{padding:8px 14px;border-radius:10px;border:0;font-weight:700;cursor:pointer;color:#fff;}
+  .btn.admin{background:linear-gradient(90deg,#6b4bff,#7f64ff);}
+  .btn.buy{background:linear-gradient(90deg,#10b981,#00d084);}
+  .admin-indicator{position:fixed;top:18px;right:150px;display:none;align-items:center;gap:8px;
+    padding:8px 12px;border-radius:12px;font-weight:700;color:#d9c8ff;background:rgba(120,90,255,0.14);}
+  .pulse{width:10px;height:10px;border-radius:50%;background:#c86bff;animation:pulse 1.2s infinite;}
+  @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.6)}100%{transform:scale(1)}}
 </style>
 </head>
 <body>
+<div class="topbar">
+  <button class="btn admin" id="adminBtn">⚡ Admin Panel</button>
+  <button class="btn buy" id="buyBtn">🛒 Buy Boost</button>
+</div>
+<div class="admin-indicator" id="adminIndicator"><div class="pulse"></div>ADMIN ON</div>
 
-  <div class="topbar">
-    <button class="btn admin" id="adminBtn">⚡ Admin Panel</button>
-    <button class="btn buy" id="buyBtn">🛒 Buy Boost</button>
-  </div>
+<main class="wrap">
+  <article class="card" data-key="card-1">
+    <div class="card-head">
+      <div class="icon"><img src="https://cdn-icons-png.flaticon.com/512/565/565547.png"></div>
+      <div><div class="title">Server Boosts (1 Month)</div></div>
+    </div>
+    <div class="stock-outer">
+      <div><div class="stock-label">STOCK AVAILABLE</div></div>
+      <div><div class="stock-num" contenteditable="false" id="num-1">246</div></div>
+    </div>
+    <div class="status in" id="status-1"><span class="dot"></span> IN STOCK — <span id="text-1">246 Available</span></div>
+  </article>
 
-  <div class="admin-indicator" id="adminIndicator"><div class="pulse"></div>ADMIN ON</div>
-
-  <main class="wrap" role="main" aria-label="stock-cards">
-    <!-- LEFT CARD (1 Month) -->
-    <article class="card" data-key="card-1">
-      <div class="card-head">
-        <div class="icon"><img src="https://cdn-icons-png.flaticon.com/512/565/565547.png" alt="rocket"></div>
-        <div>
-          <div class="title">Server Boosts (1 Month)</div>
-        </div>
-      </div>
-
-      <div class="stock-outer" aria-hidden="false">
-        <div>
-          <div class="stock-label">STOCK AVAILABLE</div>
-        </div>
-        <div style="display:flex;align-items:center;justify-content:flex-end;min-width:160px;">
-          <div class="stock-num" contenteditable="false" id="num-1">246</div>
-        </div>
-      </div>
-
-      <div style="display:flex;justify-content:flex-start;align-items:center;">
-        <div class="status in" id="status-1"><span class="dot"></span> IN STOCK</div>
-      </div>
-    </article>
-
-    <!-- RIGHT CARD (3 Months) -->
-    <article class="card" data-key="card-2">
-      <div class="card-head">
-        <div class="icon"><img src="https://cdn-icons-png.flaticon.com/512/833/833472.png" alt="bolt"></div>
-        <div>
-          <div class="title">Server Boosts (3 Months)</div>
-        </div>
-      </div>
-
-      <div class="stock-outer">
-        <div>
-          <div class="stock-label">STOCK AVAILABLE</div>
-        </div>
-        <div style="display:flex;align-items:center;justify-content:flex-end;min-width:160px;">
-          <div class="stock-num" contenteditable="false" id="num-2">12</div>
-        </div>
-      </div>
-
-      <div style="display:flex;justify-content:flex-start;align-items:center;">
-        <div class="status low" id="status-2"><span class="dot"></span> LOW STOCK</div>
-      </div>
-    </article>
-  </main>
+  <article class="card" data-key="card-2">
+    <div class="card-head">
+      <div class="icon"><img src="https://cdn-icons-png.flaticon.com/512/833/833472.png"></div>
+      <div><div class="title">Server Boosts (3 Months)</div></div>
+    </div>
+    <div class="stock-outer">
+      <div><div class="stock-label">STOCK AVAILABLE</div></div>
+      <div><div class="stock-num" contenteditable="false" id="num-2">12</div></div>
+    </div>
+    <div class="status low" id="status-2"><span class="dot"></span> LOW STOCK — <span id="text-2">12 Available</span></div>
+  </article>
+</main>
 
 <script>
-  // Elements
-  const adminBtn = document.getElementById('adminBtn');
-  const buyBtn = document.getElementById('buyBtn');
-  const adminIndicator = document.getElementById('adminIndicator');
-  const cards = [
-    { key: 'card-1', numEl: document.getElementById('num-1'), statusEl: document.getElementById('status-1') },
-    { key: 'card-2', numEl: document.getElementById('num-2'), statusEl: document.getElementById('status-2') }
-  ];
-
-  let adminMode = false;
-
-  // load saved from localStorage
-  function loadAll(){
-    cards.forEach(c=>{
-      const v = localStorage.getItem(c.key);
-      if(v !== null){
-        c.numEl.textContent = v;
-        applyStatus(c, parseInt(v,10));
-      } else {
-        applyStatus(c, parseInt(c.numEl.textContent || '0',10));
-      }
-    });
-  }
-
-  // apply pill style and text
-  function applyStatus(cardObj, num){
-    const el = cardObj.statusEl;
-    if(isNaN(num)) num = 0;
-    if(num <= 0){
-      el.className = 'status out';
-      el.innerHTML = '<span class="dot"></span> OUT OF STOCK';
-    } else if(num <= 20){
-      el.className = 'status low';
-      el.innerHTML = '<span class="dot"></span> LOW STOCK';
-    } else {
-      el.className = 'status in';
-      el.innerHTML = '<span class="dot"></span> IN STOCK';
-    }
-  }
-
-  loadAll();
-
-  // admin toggle
-  adminBtn.addEventListener('click', ()=>{
-    if(!adminMode){
-      const pass = prompt('🔐 Introdu parola admin:');
-      if(pass === 'admin123'){
-        adminMode = true;
-        adminBtn.textContent = '🟢 Admin Mode ON';
-        adminIndicator.style.display = 'flex';
-        cards.forEach(c=>{
-          c.numEl.setAttribute('contenteditable','true');
-          // visual caret allowed
-          c.numEl.style.outline = 'none';
-        });
-      } else {
-        alert('Parolă greșită!');
-      }
-    } else {
-      adminMode = false;
-      adminBtn.textContent = '⚡ Admin Panel';
-      adminIndicator.style.display = 'none';
-      cards.forEach(c=>{
-        c.numEl.setAttribute('contenteditable','false');
-      });
-    }
-  });
-
-  // save on blur and validate numeric
+const adminBtn=document.getElementById('adminBtn');
+const buyBtn=document.getElementById('buyBtn');
+const adminIndicator=document.getElementById('adminIndicator');
+const cards=[
+  {key:'card-1',num:document.getElementById('num-1'),status:document.getElementById('status-1'),text:document.getElementById('text-1')},
+  {key:'card-2',num:document.getElementById('num-2'),status:document.getElementById('status-2'),text:document.getElementById('text-2')}
+];
+let adminMode=false;
+function applyStatus(c,v){
+  if(isNaN(v))v=0;
+  if(v<=0){c.status.className='status out';c.status.innerHTML='<span class="dot"></span> OUT OF STOCK — <span id="text">0 Available</span>';}
+  else if(v<=20){c.status.className='status low';c.status.innerHTML='<span class="dot"></span> LOW STOCK — <span id="text">'+v+' Available</span>';}
+  else{c.status.className='status in';c.status.innerHTML='<span class="dot"></span> IN STOCK — <span id="text">'+v+' Available</span>';}
+}
+function loadAll(){
   cards.forEach(c=>{
-    c.numEl.addEventListener('blur', (e)=>{
-      if(!adminMode) return;
-      const raw = c.numEl.textContent.trim();
-      // accept numbers only (allow leading + spaces)
-      if(/^[-+]?\d+$/.test(raw)){
-        const n = parseInt(raw,10);
-        localStorage.setItem(c.key, String(n));
-        applyStatus(c, n);
-      } else {
-        // revert to last saved or 0
-        const last = localStorage.getItem(c.key);
-        c.numEl.textContent = last !== null ? last : '0';
-        applyStatus(c, parseInt(c.numEl.textContent || '0',10));
-        alert('⚠️ Introdu doar numere!');
-      }
-    });
-
-    // allow pressing Enter to blur (save)
-    c.numEl.addEventListener('keydown', (ev)=>{
-      if(ev.key === 'Enter'){ ev.preventDefault(); c.numEl.blur(); }
-    });
+    let v=localStorage.getItem(c.key);
+    if(v===null)v=c.num.textContent;else c.num.textContent=v;
+    applyStatus(c,parseInt(c.num.textContent,10));
   });
-
-  // buy button (keeps behavior from your code)
-  buyBtn.addEventListener('click', ()=> {
-    window.open('https://thund3r-store.mysellauth.com/','_blank');
+}
+loadAll();
+adminBtn.addEventListener('click',()=>{
+  if(!adminMode){
+    const pass=prompt('🔐 Parolă admin:');
+    if(pass==='admin123'){
+      adminMode=true;
+      adminIndicator.style.display='flex';
+      adminBtn.textContent='🟢 Admin Mode ON';
+      cards.forEach(c=>c.num.contentEditable='true');
+    }else alert('Parolă greșită!');
+  }else{
+    adminMode=false;
+    adminIndicator.style.display='none';
+    adminBtn.textContent='⚡ Admin Panel';
+    cards.forEach(c=>c.num.contentEditable='false');
+  }
+});
+cards.forEach(c=>{
+  c.num.addEventListener('blur',()=>{
+    if(!adminMode)return;
+    let v=parseInt(c.num.textContent.trim(),10);
+    if(isNaN(v))v=0;
+    localStorage.setItem(c.key,v);
+    applyStatus(c,v);
   });
-
-  // when page loads, ensure status correct
-  window.addEventListener('load', loadAll);
-
-  // helper: in case numbers changed externally, allow ctrl+R like refresh via keyboard (R)
-  document.addEventListener('keydown',(e)=>{
-    if(e.key.toLowerCase()==='r' && (e.ctrlKey||e.metaKey)){
-      e.preventDefault();
-      loadAll();
-    }
+  c.num.addEventListener('keydown',e=>{
+    if(e.key==='Enter'){e.preventDefault();c.num.blur();}
   });
+});
+buyBtn.addEventListener('click',()=>window.open('https://thund3r-store.mysellauth.com/','_blank'));
 </script>
 </body>
 </html>
