@@ -1,37 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>THUND3R STORE | Stock Overview</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap');
-    body { background: radial-gradient(circle at top left, #0e0f1a, #0b0c15); color: white; font-family: 'Inter', sans-serif; margin: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;}
-    .navbar { position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 10;}
-    .logo { background: rgba(255, 255, 255, 0.05); padding: 8px 18px; border-radius: 10px; font-weight: 600; font-size: 14px; box-shadow: 0 0 8px rgba(0,0,0,0.3);}
-    .nav-buttons { display: flex; gap: 10px;}
-    .nav-btn { border: none; outline: none; border-radius: 10px; font-weight: 600; cursor: pointer; padding: 10px 20px; transition: 0.25s;}
-    .nav-btn.green { background: #00b76b; color: white;}
-    .nav-btn.purple { background: #7357ff; color: white;}
-    .nav-btn.green:hover, .nav-btn.purple:hover { filter: brightness(1.15); transform: translateY(-2px);}
-    h1 { font-size: 2.3rem; margin-top: 80px; margin-bottom: 10px; font-weight: 700;}
-    .updated { font-size: 0.9rem; color: #a0a0a0; margin-bottom: 30px;}
-    .cards { display: flex; gap: 25px; flex-wrap: wrap; justify-content: center;}
-    .card { background: linear-gradient(to bottom right, #1a1c2b, #11131f); border-radius: 16px; padding: 25px; width: 280px; box-shadow: 0 0 20px rgba(0,0,0,0.4); border-top: 3px solid rgba(120, 100, 255, 0.4);}
-    .card h2 { font-size: 1.2rem; margin: 15px 0 10px 0; font-weight: 600;}
-    .stock { font-size: 2.5rem; font-weight: 700; background: linear-gradient(90deg, #f0ca4c, #8cb7ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; cursor: text;}
-    .status { margin-top: 15px; display: inline-block; font-size: 0.85rem; font-weight: 600; padding: 6px 14px; border-radius: 9999px;}
-    .in-stock { background: rgba(0,255,136,0.1); color: #00ff84;}
-    .low-stock { background: rgba(255,200,50,0.1); color: #ffc74c;}
-    .out-stock { background: rgba(255,60,60,0.1); color: #ff4d4d;}
-    .refresh { margin-top: 40px; background: linear-gradient(90deg, #4a9fff, #6e71ff); border: none; color: white; padding: 12px 28px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: 0.25s;}
-    .refresh:hover { filter: brightness(1.15); transform: translateY(-2px);}
-    .toast { position: fixed; bottom: 25px; right: 25px; background: linear-gradient(90deg, #7357ff, #9d6fff); padding: 12px 20px; border-radius: 10px; box-shadow: 0 0 20px rgba(115, 87, 255, 0.4); animation: fadeIn 0.4s ease;}
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    .admin-indicator { position: fixed; top: 10px; right: 150px; display: none; align-items: center; gap: 8px; background: rgba(120, 90, 255, 0.15); border: 1px solid rgba(180, 140, 255, 0.3); padding: 8px 15px; border-radius: 12px; color: #d1b3ff; font-size: 0.9rem; backdrop-filter: blur(8px); box-shadow: 0 0 12px rgba(160, 100, 255, 0.4); animation: fadeIn 0.4s ease; z-index: 5;}
-    .pulse-dot { width: 10px; height: 10px; border-radius: 50%; background: #c86bff; box-shadow: 0 0 8px #c86bff; animation: pulse 1.2s infinite ease-in-out;}
-    @keyframes pulse {0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.6); opacity: 0.6; } 100% { transform: scale(1); opacity: 1; }}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THUND3R STORE | Stock Overview</title>
+<style>
+  /* ... (păstrează stilurile tale existente) ... */
+</style>
 </head>
 <body>
 
@@ -78,12 +53,10 @@ const timeEl = document.getElementById("time");
 const adminIndicator = document.getElementById("adminIndicator");
 let adminMode = false;
 
-const STOCK_URL = "http://91.200.220.33:3000/";
+const STOCK_URL = "http://localhost:8080/stock-proxy"; // folosește proxy-ul
 
-// Actualizare timp
 function updateTime() {
-  const now = new Date();
-  timeEl.textContent = now.toLocaleTimeString();
+  timeEl.textContent = new Date().toLocaleTimeString();
 }
 updateTime();
 setInterval(updateTime, 1000);
@@ -131,24 +104,23 @@ buyBtn.addEventListener("click", () => {
   window.open("https://thund3r-store.mysellauth.com/", "_blank");
 });
 
-// Preluare stoc direct din text
+// Preluare stoc prin proxy
 async function fetchStock() {
   try {
     const response = await fetch(STOCK_URL);
     const text = await response.text();
 
-    // Extragem numerele din text (1month și 3months)
+    // Extragem primele două numere din text
     const matches = text.match(/\d+/g);
-    if (!matches || matches.length < 2) throw new Error("Nu s-au găsit stocurile în text");
+    if (!matches || matches.length < 2) throw new Error("Nu s-au găsit stocurile");
 
-    // Aplicăm stocurile în carduri
     cards.forEach((card, i) => {
-      const value = matches[i]; // primul număr -> 1month, al doilea -> 3months
+      const value = matches[i];
       card.querySelector(".stock").textContent = value;
       updateStatus(card, value);
     });
 
-    showToast("✅ Stoc actualizat de pe server!");
+    showToast("✅ Stoc actualizat!");
   } catch (err) {
     console.error(err);
     showToast("❌ Nu s-a putut prelua stocul!");
@@ -181,6 +153,5 @@ function showToast(msg) {
   setTimeout(() => toast.remove(), 2500);
 }
 </script>
-
 </body>
 </html>
