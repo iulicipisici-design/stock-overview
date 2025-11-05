@@ -1,21 +1,4 @@
-<?php
-// --- STOCK MANAGEMENT (BACKEND) ---
-$file = 'stock.json';
-if (!file_exists($file)) file_put_contents($file, json_encode(["card-1"=>246,"card-2"=>12], JSON_PRETTY_PRINT));
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $input = json_decode(file_get_contents('php://input'), true);
-  if (isset($input['key']) && isset($input['value'])) {
-    $data = json_decode(file_get_contents($file), true);
-    $data[$input['key']] = intval($input['value']);
-    file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT));
-    echo json_encode(["success"=>true]);
-  } else echo json_encode(["error"=>"invalid input"]);
-  exit;
-}
-$data = json_decode(file_get_contents($file), true);
-?>
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -23,27 +6,74 @@ $data = json_decode(file_get_contents($file), true);
 <title>THUND3R STORE — Stock Overview</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root{--bg1:#07101a;--bg2:#09141d;--muted:#9aa3ad;}
-  *{box-sizing:border-box;}
-  body{margin:0;font-family:Inter,system-ui;background:linear-gradient(180deg,#041017 0%,#07121a 60%);
-    display:flex;flex-direction:column;align-items:center;color:#e9eef6;min-height:100vh;padding:36px 20px;}
-  .wrap{width:100%;max-width:1180px;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-    gap:28px;margin-top:40px;}
-  .card{border-radius:18px;padding:22px;background:linear-gradient(180deg,rgba(255,255,255,0.015),rgba(0,0,0,0.16));
-    box-shadow:0 6px 22px rgba(2,4,10,0.7),inset 0 1px 0 rgba(255,255,255,0.02);position:relative;border:1px solid rgba(255,255,255,0.03);}
-  .card::before{content:"";position:absolute;top:-6px;left:14px;right:14px;height:6px;border-radius:8px;
-    background:linear-gradient(90deg,#f1c64a 0%,#7eaaff 50%,#6b8bff 100%);}
+  :root{
+    --bg1:#07101a;
+    --bg2:#09141d;
+    --muted:#9aa3ad;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:Inter,system-ui;
+    background:linear-gradient(180deg,#041017 0%,#07121a 60%);
+    display:flex;
+    align-items:center;
+    justify-content:flex-start;
+    color:#e9eef6;
+    padding:36px 20px;
+    min-height:100vh;
+    flex-direction:column;
+  }
+
+  .wrap{
+    width:100%;
+    max-width:1180px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:28px;
+    justify-content:center;
+    align-items:flex-start;
+    margin-top:40px;
+  }
+
+  .card{
+    border-radius:18px;
+    padding:22px;
+    background:linear-gradient(180deg,rgba(255,255,255,0.015),rgba(0,0,0,0.16));
+    box-shadow:0 6px 22px rgba(2,4,10,0.7),inset 0 1px 0 rgba(255,255,255,0.02);
+    position:relative;
+    border:1px solid rgba(255,255,255,0.03);
+  }
+
+  .card::before{
+    content:"";
+    position:absolute;
+    top:-6px;left:14px;right:14px;height:6px;border-radius:8px;
+    background:linear-gradient(90deg,#f1c64a 0%,#7eaaff 50%,#6b8bff 100%);
+  }
+
   .card-head{display:flex;align-items:center;gap:14px;}
-  .icon{width:62px;height:62px;border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(0,0,0,0.18));
-    display:flex;align-items:center;justify-content:center;}
-  .icon img{width:34px;height:34px;}
+  .icon{
+    width:62px;height:62px;border-radius:14px;
+    background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(0,0,0,0.18));
+    display:flex;align-items:center;justify-content:center;
+  }
+  .icon img{width:34px;height:34px}
   .title{font-weight:800;font-size:20px;margin:6px 0 0;}
-  .stock-outer{margin-top:18px;background:rgba(255,255,255,0.02);padding:18px;border-radius:12px;
-    display:flex;align-items:center;justify-content:space-between;}
+  .stock-outer{
+    margin-top:18px;background:rgba(255,255,255,0.02);padding:18px;
+    border-radius:12px;display:flex;align-items:center;justify-content:space-between;
+  }
   .stock-label{color:var(--muted);font-weight:700;font-size:12px;letter-spacing:1.6px;}
-  .stock-num{font-weight:800;font-size:44px;background:linear-gradient(90deg,#f1c64a 0%,#7eaaff 100%);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;text-align:right;min-width:92px;}
-  .status{margin-top:18px;display:inline-flex;align-items:center;gap:10px;padding:10px 18px;border-radius:30px;font-weight:800;font-size:13px;}
+  .stock-num{
+    font-weight:800;font-size:44px;
+    background:linear-gradient(90deg,#f1c64a 0%,#7eaaff 100%);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    text-align:right;min-width:92px;
+  }
+
+  .status{margin-top:18px;display:inline-flex;align-items:center;gap:10px;
+    padding:10px 18px;border-radius:30px;font-weight:800;font-size:13px;}
   .status .dot{width:10px;height:10px;border-radius:50%;}
   .in{background:rgba(0,255,140,0.06);color:#00ff84;}
   .in .dot{background:#00c96a;}
@@ -51,33 +81,113 @@ $data = json_decode(file_get_contents($file), true);
   .low .dot{background:#ffb43a;}
   .out{background:rgba(255,60,60,0.05);color:#ff6b6b;}
   .out .dot{background:#ff4d4d;}
+
   .topbar{position:fixed;top:18px;right:20px;display:flex;flex-wrap:wrap;gap:10px;z-index:50;}
   .btn{padding:8px 14px;border-radius:10px;border:0;font-weight:700;cursor:pointer;color:#fff;white-space:nowrap;}
   .btn.admin{background:linear-gradient(90deg,#6b4bff,#7f64ff);}
   .btn.buy{background:linear-gradient(90deg,#10b981,#00d084);}
-  .btn.refresh{background:linear-gradient(90deg,#4a9fff,#6e71ff);font-size:20px;padding:18px 40px;border-radius:14px;}
-  .admin-indicator{position:fixed;top:18px;right:320px;display:none;align-items:center;gap:8px;padding:8px 12px;
-    border-radius:12px;font-weight:700;color:#d9c8ff;background:rgba(120,90,255,0.14);}
+  .btn.refresh{
+    background:linear-gradient(90deg,#4a9fff,#6e71ff);
+    font-size:20px;
+    padding:18px 40px;
+    border-radius:14px;
+  }
+
+  .admin-indicator{
+    position:fixed;
+    top:18px;
+    right:320px;
+    display:none;
+    align-items:center;
+    gap:8px;
+    padding:8px 12px;
+    border-radius:12px;
+    font-weight:700;
+    color:#d9c8ff;
+    background:rgba(120,90,255,0.14);
+  }
+
   .pulse{width:10px;height:10px;border-radius:50%;background:#c86bff;animation:pulse 1.2s infinite;}
   @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.6)}100%{transform:scale(1)}}
-  .bottom-actions{margin-top:40px;display:flex;justify-content:center;}
-  .store-badge{position:fixed;top:18px;left:20px;background:rgba(10,20,30,0.65);border:1px solid rgba(255,255,255,0.08);
-    border-radius:12px;padding:10px 18px;font-weight:700;font-size:14px;color:#e9eef6;box-shadow:0 4px 12px rgba(0,0,0,0.4);}
-  .overview-title{font-size:34px;font-weight:800;display:flex;align-items:center;gap:10px;margin-top:120px;text-align:center;}
-  .last-updated{margin-top:6px;font-size:15px;background:rgba(255,255,255,0.05);padding:6px 14px;border-radius:12px;color:#aab4c0;text-align:center;}
-  @media (max-width:768px){.overview-title{margin-top:100px;font-size:26px;}.btn.refresh{font-size:18px;padding:14px 30px;}}
-  @media (max-width:480px){.title{font-size:18px;}.stock-num{font-size:32px;}.overview-title{font-size:22px;}}
+
+  .bottom-actions {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .store-badge {
+    position: fixed;
+    top: 18px;
+    left: 20px;
+    background: rgba(10,20,30,0.65);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 10px 18px;
+    font-weight: 700;
+    font-size: 14px;
+    color: #e9eef6;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
+
+  .overview-title {
+    font-size: 34px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 120px;
+    text-align: center;
+  }
+
+  .last-updated {
+    margin-top: 6px;
+    font-size: 15px;
+    background: rgba(255,255,255,0.05);
+    padding: 6px 14px;
+    border-radius: 12px;
+    color: #aab4c0;
+    text-align: center;
+  }
+
+  /* ========== RESPONSIVE DESIGN ========== */
+  @media (max-width: 1024px) {
+    .wrap {gap:20px;}
+    .card {padding:18px;}
+    .stock-num {font-size:38px;}
+    .overview-title {font-size:28px;}
+  }
+
+  @media (max-width: 768px) {
+    body {padding:20px;}
+    .overview-title {margin-top:100px;font-size:26px;}
+    .topbar {position:relative;top:10px;right:auto;justify-content:center;margin-bottom:20px;}
+    .store-badge {position:relative;top:0;left:0;margin-bottom:10px;text-align:center;}
+    .btn.refresh {font-size:18px;padding:14px 30px;}
+  }
+
+  @media (max-width: 480px) {
+    .title {font-size:18px;}
+    .stock-num {font-size:32px;}
+    .overview-title {font-size:22px;}
+    .btn {font-size:14px;padding:6px 10px;}
+  }
 </style>
 </head>
 <body>
+
 <div class="store-badge">THUND3R STORE | Boost SELL</div>
+
 <div class="topbar">
   <button class="btn admin" id="adminBtn">⚡ Admin Panel</button>
   <button class="btn buy" id="buyBtn">🛒 Buy Boost</button>
 </div>
+
 <div class="admin-indicator" id="adminIndicator"><div class="pulse"></div>ADMIN ON</div>
+
 <h1 class="overview-title">⚙️ Stock Overview</h1>
 <div class="last-updated" id="lastUpdated">Last updated: --:--:--</div>
+
 <main class="wrap">
   <article class="card" data-key="card-1">
     <div class="card-head">
@@ -86,9 +196,9 @@ $data = json_decode(file_get_contents($file), true);
     </div>
     <div class="stock-outer">
       <div><div class="stock-label">STOCK AVAILABLE</div></div>
-      <div><div class="stock-num" contenteditable="false" id="num-1"><?= $data["card-1"] ?></div></div>
+      <div><div class="stock-num" contenteditable="false" id="num-1">246</div></div>
     </div>
-    <div class="status" id="status-1"></div>
+    <div class="status in" id="status-1"><span class="dot"></span> IN STOCK — <span id="text-1">246 Available</span></div>
   </article>
 
   <article class="card" data-key="card-2">
@@ -98,72 +208,84 @@ $data = json_decode(file_get_contents($file), true);
     </div>
     <div class="stock-outer">
       <div><div class="stock-label">STOCK AVAILABLE</div></div>
-      <div><div class="stock-num" contenteditable="false" id="num-2"><?= $data["card-2"] ?></div></div>
+      <div><div class="stock-num" contenteditable="false" id="num-2">12</div></div>
     </div>
-    <div class="status" id="status-2"></div>
+    <div class="status low" id="status-2"><span class="dot"></span> LOW STOCK — <span id="text-2">12 Available</span></div>
   </article>
 </main>
-<div class="bottom-actions"><button class="btn refresh" id="refreshBtn">🔄 Refresh Stock</button></div>
+
+<div class="bottom-actions">
+  <button class="btn refresh" id="refreshBtn">🔄 Refresh Stock</button>
+</div>
 
 <script>
-const cards=[
-  {key:'card-1',num:document.getElementById('num-1'),status:document.getElementById('status-1')},
-  {key:'card-2',num:document.getElementById('num-2'),status:document.getElementById('status-2')}
-];
 const adminBtn=document.getElementById('adminBtn');
-const adminIndicator=document.getElementById('adminIndicator');
 const buyBtn=document.getElementById('buyBtn');
 const refreshBtn=document.getElementById('refreshBtn');
+const adminIndicator=document.getElementById('adminIndicator');
 const lastUpdated=document.getElementById('lastUpdated');
+const cards=[
+  {key:'card-1',num:document.getElementById('num-1'),status:document.getElementById('status-1'),text:document.getElementById('text-1')},
+  {key:'card-2',num:document.getElementById('num-2'),status:document.getElementById('status-2'),text:document.getElementById('text-2')}
+];
 let adminMode=false;
 
 function applyStatus(c,v){
+  if(isNaN(v))v=0;
   if(v<=0){c.status.className='status out';c.status.innerHTML='<span class="dot"></span> OUT OF STOCK — <span>0 Available</span>';}
   else if(v<=20){c.status.className='status low';c.status.innerHTML='<span class="dot"></span> LOW STOCK — <span>'+v+' Available</span>';}
   else{c.status.className='status in';c.status.innerHTML='<span class="dot"></span> IN STOCK — <span>'+v+' Available</span>';}
 }
-cards.forEach(c=>applyStatus(c,parseInt(c.num.textContent)));
 
-adminBtn.onclick=()=>{
-  if(!adminMode){
-    const p=prompt("🔐 Parolă admin:");
-    if(p==="admin123"){adminMode=true;adminIndicator.style.display='flex';adminBtn.textContent="🟢 Admin Mode ON";cards.forEach(c=>c.num.contentEditable='true');}
-    else alert("Parolă greșită!");
-  }else{
-    adminMode=false;adminIndicator.style.display='none';adminBtn.textContent="⚡ Admin Panel";cards.forEach(c=>c.num.contentEditable='false');
-  }
-};
-
-cards.forEach(c=>{
-  c.num.addEventListener('blur',async ()=>{
-    if(!adminMode)return;
-    let v=parseInt(c.num.textContent.trim(),10);if(isNaN(v))v=0;applyStatus(c,v);
-    await fetch('',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:c.key,value:v})});
+function loadAll(){
+  cards.forEach(c=>{
+    let v=localStorage.getItem(c.key);
+    if(v===null)v=c.num.textContent;else c.num.textContent=v;
+    applyStatus(c,parseInt(c.num.textContent,10));
   });
-  c.num.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();c.num.blur();}});
+}
+loadAll();
+
+adminBtn.addEventListener('click',()=>{
+  if(!adminMode){
+    const pass=prompt('🔐 Parolă admin:');
+    if(pass==='admin123'){
+      adminMode=true;
+      adminIndicator.style.display='flex';
+      adminBtn.textContent='🟢 Admin Mode ON';
+      cards.forEach(c=>c.num.contentEditable='true');
+    }else alert('Parolă greșită!');
+  }else{
+    adminMode=false;
+    adminIndicator.style.display='none';
+    adminBtn.textContent='⚡ Admin Panel';
+    cards.forEach(c=>c.num.contentEditable='false');
+  }
 });
 
-buyBtn.onclick=()=>window.open('https://thund3r-store.mysellauth.com/','_blank');
-refreshBtn.onclick=()=>location.reload();
+cards.forEach(c=>{
+  c.num.addEventListener('blur',()=>{
+    if(!adminMode)return;
+    let v=parseInt(c.num.textContent.trim(),10);
+    if(isNaN(v))v=0;
+    localStorage.setItem(c.key,v);
+    applyStatus(c,v);
+  });
+  c.num.addEventListener('keydown',e=>{
+    if(e.key==='Enter'){e.preventDefault();c.num.blur();}
+  });
+});
+
+buyBtn.addEventListener('click',()=>window.open('https://thund3r-store.mysellauth.com/','_blank'));
+refreshBtn.addEventListener('click',()=>location.reload());
 
 function updateClock(){
   const now=new Date();
-  lastUpdated.textContent="Last updated: "+now.toLocaleTimeString('en-US',{hour12:true});
+  const timeStr=now.toLocaleTimeString('en-US',{hour12:true});
+  lastUpdated.textContent="Last updated: "+timeStr;
 }
 setInterval(updateClock,1000);
 updateClock();
-
-// Auto-refresh stock every 5 sec
-setInterval(async ()=>{
-  const res=await fetch(window.location.href);
-  const txt=await res.text();
-  const parser=new DOMParser();
-  const doc=parser.parseFromString(txt,'text/html');
-  cards.forEach(c=>{
-    let v=parseInt(doc.getElementById(c.num.id).textContent);
-    if(!adminMode){c.num.textContent=v;applyStatus(c,v);}
-  });
-},5000);
 </script>
 </body>
 </html>
