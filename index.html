@@ -107,6 +107,22 @@
     color: #e9eef6;
     box-shadow: 0 4px 12px rgba(0,0,0,0.4);
   }
+  .overview-title {
+    font-size: 34px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 100px;
+  }
+  .last-updated {
+    margin-top: 6px;
+    font-size: 15px;
+    background: rgba(255,255,255,0.05);
+    padding: 6px 14px;
+    border-radius: 12px;
+    color: #aab4c0;
+  }
 </style>
 </head>
 <body>
@@ -119,6 +135,9 @@
 </div>
 
 <div class="admin-indicator" id="adminIndicator"><div class="pulse"></div>ADMIN ON</div>
+
+<h1 class="overview-title">⚙️ Stock Overview</h1>
+<div class="last-updated" id="lastUpdated">Last updated: --:--:--</div>
 
 <main class="wrap">
   <article class="card" data-key="card-1">
@@ -155,6 +174,7 @@ const adminBtn=document.getElementById('adminBtn');
 const buyBtn=document.getElementById('buyBtn');
 const refreshBtn=document.getElementById('refreshBtn');
 const adminIndicator=document.getElementById('adminIndicator');
+const lastUpdated=document.getElementById('lastUpdated');
 const cards=[
   {key:'card-1',num:document.getElementById('num-1'),status:document.getElementById('status-1'),text:document.getElementById('text-1')},
   {key:'card-2',num:document.getElementById('num-2'),status:document.getElementById('status-2'),text:document.getElementById('text-2')}
@@ -209,6 +229,14 @@ cards.forEach(c=>{
 
 buyBtn.addEventListener('click',()=>window.open('https://thund3r-store.mysellauth.com/','_blank'));
 refreshBtn.addEventListener('click',()=>location.reload());
+
+function updateClock(){
+  const now=new Date();
+  const timeStr=now.toLocaleTimeString('en-US',{hour12:true});
+  lastUpdated.textContent="Last updated: "+timeStr;
+}
+setInterval(updateClock,1000);
+updateClock();
 </script>
 </body>
 </html>
