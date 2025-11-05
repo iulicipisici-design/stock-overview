@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -22,6 +22,7 @@
     color:#e9eef6;
     padding:36px;
     min-height:100vh;
+    flex-direction:column;
   }
   .wrap{
     width:100%;
@@ -83,11 +84,15 @@
     padding:8px 12px;border-radius:12px;font-weight:700;color:#d9c8ff;background:rgba(120,90,255,0.14);}
   .pulse{width:10px;height:10px;border-radius:50%;background:#c86bff;animation:pulse 1.2s infinite;}
   @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.6)}100%{transform:scale(1)}}
+  .bottom-actions {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+  }
 </style>
 </head>
 <body>
 <div class="topbar">
-  <button class="btn refresh" id="refreshBtn">🔄 Refresh Stock</button>
   <button class="btn admin" id="adminBtn">⚡ Admin Panel</button>
   <button class="btn buy" id="buyBtn">🛒 Buy Boost</button>
 </div>
@@ -118,6 +123,10 @@
     <div class="status low" id="status-2"><span class="dot"></span> LOW STOCK — <span id="text-2">12 Available</span></div>
   </article>
 </main>
+
+<div class="bottom-actions">
+  <button class="btn refresh" id="refreshBtn">🔄 Refresh Stock</button>
+</div>
 
 <script>
 const adminBtn=document.getElementById('adminBtn');
@@ -177,8 +186,6 @@ cards.forEach(c=>{
 });
 
 buyBtn.addEventListener('click',()=>window.open('https://thund3r-store.mysellauth.com/','_blank'));
-
-// 🔄 Refresh button – reloads the page
 refreshBtn.addEventListener('click',()=>location.reload());
 </script>
 </body>
