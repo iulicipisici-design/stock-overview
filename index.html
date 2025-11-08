@@ -180,14 +180,15 @@ const refreshBtn = document.getElementById('refreshBtn');
 const lastUpdated = document.getElementById('lastUpdated');
 const buyBtn = document.getElementById('buyBtn');
 
+// URL cu proxy HTTPS (rezolvă eroarea CORS și Mixed Content)
+const stockUrl = "https://api.allorigins.win/raw?url=http://91.200.220.33:3000/data/stock.json";
+
 async function fetchStock(){
   try{
-    const res = await fetch('http://91.200.220.33:3000/data/stock.json?_=' + Date.now());
+    const res = await fetch(stockUrl + "&_=" + Date.now());
     const data = await res.json();
 
-    // presupunem că fișierul stock.json are ceva gen:
     // { "1month": 246, "3month": 12 }
-
     const one = data["1month"] ?? 0;
     const three = data["3month"] ?? 0;
 
