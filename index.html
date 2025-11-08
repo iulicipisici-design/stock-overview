@@ -150,7 +150,6 @@
     text-align: center;
   }
 
-  /* ========== RESPONSIVE DESIGN ========== */
   @media (max-width: 1024px) {
     .wrap {gap:20px;}
     .card {padding:18px;}
@@ -286,6 +285,11 @@ function updateClock(){
 }
 setInterval(updateClock,1000);
 updateClock();
+
+// 🔁 REFRESH automat la fiecare 1 minut (60000 ms)
+setInterval(()=>{
+  location.reload();
+},60000);
 </script>
 </body>
 </html>
