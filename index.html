@@ -93,29 +93,6 @@
     border-radius:14px;
   }
 
-  .admin-indicator{
-    position:fixed;
-    top:18px;
-    right:320px;
-    display:none;
-    align-items:center;
-    gap:8px;
-    padding:8px 12px;
-    border-radius:12px;
-    font-weight:700;
-    color:#d9c8ff;
-    background:rgba(120,90,255,0.14);
-  }
-
-  .pulse{width:10px;height:10px;border-radius:50%;background:#c86bff;animation:pulse 1.2s infinite;}
-  @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.6)}100%{transform:scale(1)}}
-
-  .bottom-actions {
-    margin-top: 40px;
-    display: flex;
-    justify-content: center;
-  }
-
   .store-badge {
     position: fixed;
     top: 18px;
@@ -150,27 +127,10 @@
     text-align: center;
   }
 
-  /* ========== RESPONSIVE DESIGN ========== */
-  @media (max-width: 1024px) {
-    .wrap {gap:20px;}
-    .card {padding:18px;}
-    .stock-num {font-size:38px;}
-    .overview-title {font-size:28px;}
-  }
-
-  @media (max-width: 768px) {
-    body {padding:20px;}
-    .overview-title {margin-top:100px;font-size:26px;}
-    .topbar {position:relative;top:10px;right:auto;justify-content:center;margin-bottom:20px;}
-    .store-badge {position:relative;top:0;left:0;margin-bottom:10px;text-align:center;}
-    .btn.refresh {font-size:18px;padding:14px 30px;}
-  }
-
-  @media (max-width: 480px) {
-    .title {font-size:18px;}
-    .stock-num {font-size:32px;}
-    .overview-title {font-size:22px;}
-    .btn {font-size:14px;padding:6px 10px;}
+  .bottom-actions {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
   }
 </style>
 </head>
@@ -179,38 +139,35 @@
 <div class="store-badge">THUND3R STORE | Boost SELL</div>
 
 <div class="topbar">
-  <button class="btn admin" id="adminBtn">⚡ Admin Panel</button>
   <button class="btn buy" id="buyBtn">🛒 Buy Boost</button>
 </div>
-
-<div class="admin-indicator" id="adminIndicator"><div class="pulse"></div>ADMIN ON</div>
 
 <h1 class="overview-title">⚙️ Stock Overview</h1>
 <div class="last-updated" id="lastUpdated">Last updated: --:--:--</div>
 
 <main class="wrap">
-  <article class="card" data-key="card-1">
+  <article class="card">
     <div class="card-head">
       <div class="icon"><img src="https://cdn-icons-png.flaticon.com/512/565/565547.png"></div>
       <div><div class="title">Server Boosts (1 Month)</div></div>
     </div>
     <div class="stock-outer">
       <div><div class="stock-label">STOCK AVAILABLE</div></div>
-      <div><div class="stock-num" contenteditable="false" id="num-1">246</div></div>
+      <div><div class="stock-num" id="num-1">--</div></div>
     </div>
-    <div class="status in" id="status-1"><span class="dot"></span> IN STOCK — <span id="text-1">246 Available</span></div>
+    <div class="status" id="status-1"><span class="dot"></span> Loading...</div>
   </article>
 
-  <article class="card" data-key="card-2">
+  <article class="card">
     <div class="card-head">
       <div class="icon"><img src="https://cdn-icons-png.flaticon.com/512/833/833472.png"></div>
       <div><div class="title">Server Boosts (3 Months)</div></div>
     </div>
     <div class="stock-outer">
       <div><div class="stock-label">STOCK AVAILABLE</div></div>
-      <div><div class="stock-num" contenteditable="false" id="num-2">12</div></div>
+      <div><div class="stock-num" id="num-2">--</div></div>
     </div>
-    <div class="status low" id="status-2"><span class="dot"></span> LOW STOCK — <span id="text-2">12 Available</span></div>
+    <div class="status" id="status-2"><span class="dot"></span> Loading...</div>
   </article>
 </main>
 
@@ -219,73 +176,49 @@
 </div>
 
 <script>
-const adminBtn=document.getElementById('adminBtn');
-const buyBtn=document.getElementById('buyBtn');
-const refreshBtn=document.getElementById('refreshBtn');
-const adminIndicator=document.getElementById('adminIndicator');
-const lastUpdated=document.getElementById('lastUpdated');
-const cards=[
-  {key:'card-1',num:document.getElementById('num-1'),status:document.getElementById('status-1'),text:document.getElementById('text-1')},
-  {key:'card-2',num:document.getElementById('num-2'),status:document.getElementById('status-2'),text:document.getElementById('text-2')}
-];
-let adminMode=false;
+const refreshBtn = document.getElementById('refreshBtn');
+const lastUpdated = document.getElementById('lastUpdated');
+const buyBtn = document.getElementById('buyBtn');
 
-function applyStatus(c,v){
-  if(isNaN(v))v=0;
-  if(v<=0){c.status.className='status out';c.status.innerHTML='<span class="dot"></span> OUT OF STOCK — <span>0 Available</span>';}
-  else if(v<=20){c.status.className='status low';c.status.innerHTML='<span class="dot"></span> LOW STOCK — <span>'+v+' Available</span>';}
-  else{c.status.className='status in';c.status.innerHTML='<span class="dot"></span> IN STOCK — <span>'+v+' Available</span>';}
-}
+async function fetchStock(){
+  try{
+    const res = await fetch('http://91.200.220.33:3000/data/stock.json?_=' + Date.now());
+    const data = await res.json();
 
-function loadAll(){
-  cards.forEach(c=>{
-    let v=localStorage.getItem(c.key);
-    if(v===null)v=c.num.textContent;else c.num.textContent=v;
-    applyStatus(c,parseInt(c.num.textContent,10));
-  });
-}
-loadAll();
+    // presupunem că fișierul stock.json are ceva gen:
+    // { "1month": 246, "3month": 12 }
 
-adminBtn.addEventListener('click',()=>{
-  if(!adminMode){
-    const pass=prompt('🔐 Parolă admin:');
-    if(pass==='admin123'){
-      adminMode=true;
-      adminIndicator.style.display='flex';
-      adminBtn.textContent='🟢 Admin Mode ON';
-      cards.forEach(c=>c.num.contentEditable='true');
-    }else alert('Parolă greșită!');
-  }else{
-    adminMode=false;
-    adminIndicator.style.display='none';
-    adminBtn.textContent='⚡ Admin Panel';
-    cards.forEach(c=>c.num.contentEditable='false');
+    const one = data["1month"] ?? 0;
+    const three = data["3month"] ?? 0;
+
+    updateCard("num-1", "status-1", one);
+    updateCard("num-2", "status-2", three);
+
+    const now = new Date();
+    lastUpdated.textContent = "Last updated: " + now.toLocaleTimeString('en-US',{hour12:true});
+  }catch(e){
+    console.error("Eroare la preluarea stocului:", e);
+    lastUpdated.textContent = "Failed to fetch stock ❌";
   }
-});
+}
 
-cards.forEach(c=>{
-  c.num.addEventListener('blur',()=>{
-    if(!adminMode)return;
-    let v=parseInt(c.num.textContent.trim(),10);
-    if(isNaN(v))v=0;
-    localStorage.setItem(c.key,v);
-    applyStatus(c,v);
-  });
-  c.num.addEventListener('keydown',e=>{
-    if(e.key==='Enter'){e.preventDefault();c.num.blur();}
-  });
-});
+function updateCard(numId, statusId, value){
+  const num = document.getElementById(numId);
+  const status = document.getElementById(statusId);
+  num.textContent = value;
+  let cls, text;
+  if(value <= 0){cls="out"; text="OUT OF STOCK — 0 Available";}
+  else if(value <= 20){cls="low"; text="LOW STOCK — " + value + " Available";}
+  else{cls="in"; text="IN STOCK — " + value + " Available";}
+  status.className = "status " + cls;
+  status.innerHTML = '<span class="dot"></span> ' + text;
+}
 
 buyBtn.addEventListener('click',()=>window.open('https://thund3r-store.mysellauth.com/','_blank'));
-refreshBtn.addEventListener('click',()=>location.reload());
+refreshBtn.addEventListener('click',fetchStock);
 
-function updateClock(){
-  const now=new Date();
-  const timeStr=now.toLocaleTimeString('en-US',{hour12:true});
-  lastUpdated.textContent="Last updated: "+timeStr;
-}
-setInterval(updateClock,1000);
-updateClock();
+fetchStock();
+setInterval(fetchStock, 30000);
 </script>
 </body>
 </html>
